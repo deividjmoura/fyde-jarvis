@@ -1,0 +1,36 @@
+{
+  "name": "fyde-jarvis",
+  "version": "1.0.0",
+  "description": "Assistente de IA com: - FastAPI - LangChain - Firebase - MySQL - OpenRouter",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"No tests yet\"",
+    "prepare": "husky"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/deividjmoura/fyde-jarvis.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/deividjmoura/fyde-jarvis/issues"
+  },
+  "homepage": "https://github.com/deividjmoura/fyde-jarvis#readme",
+  "devDependencies": {
+    "@commitlint/config-conventional": "^21.0.1",
+    "commitizen": "^4.3.1",
+    "commitlint": "^21.0.1",
+    "cz-conventional-changelog": "^3.3.0",
+    "husky": "^9.1.7"
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  }
+}
