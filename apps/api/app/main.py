@@ -8,6 +8,7 @@ from app.db.session import engine
 from app.db.base import Base
 
 from app.db.models import User
+from app.services.firebase import verify_firebase_token
 
 
 app = FastAPI(
