@@ -8,6 +8,7 @@ from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.tools import tool
 
 from app.core.checkpointer import get_checkpointer
+from app.services.llm.provider import get_llm
 
 # Carrega .env
 load_dotenv()
@@ -39,21 +40,6 @@ def simple_calculator(expression: str) -> str:
         return "Não consegui calcular essa expressão."
 
 tools = [get_current_time, simple_calculator]
-
-
-def get_llm():
-    api_key = os.getenv("OPENROUTER_API_KEY")
-    if not api_key:
-        raise ValueError("❌ OPENROUTER_API_KEY não encontrada no .env")
-    
-    print(f"🔑 OpenRouter carregado (modelo: claude-3-haiku)")
-    
-    return ChatOpenAI(
-        model="anthropic/claude-3-haiku",
-        base_url="https://openrouter.ai/api/v1",
-        api_key=api_key,
-        temperature=0.7,
-    )
 
 
 # ====================== RUN AGENT ======================

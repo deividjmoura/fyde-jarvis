@@ -24,7 +24,7 @@ if __name__ == "__main__":
     print("🚀 Testando Fyde Jarvis com memória persistente...\n")
     
     tests = [
-        "pode me dizer tudo que já conversamos ?"
+        "estou só testando ?"
     ]
     
     for pergunta in tests:
