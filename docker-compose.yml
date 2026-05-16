@@ -7,8 +7,12 @@ services:
 
     container_name: fyde_mysql
 
+    restart: always
+
     environment:
       MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: fydeuser
+      MYSQL_PASSWORD: fydepass
       MYSQL_DATABASE: fydejarvis
 
     ports:
