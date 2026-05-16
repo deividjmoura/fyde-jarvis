@@ -13,6 +13,8 @@ class Settings(BaseSettings):
 
     SECRET_KEY: str
 
+    FIREBASE_CREDENTIALS: str
+
     model_config = SettingsConfigDict(
         env_file=".env",
         extra="ignore"

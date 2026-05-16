@@ -1,11 +1,19 @@
+import json
+
 import firebase_admin
 
-from firebase_admin import credentials
 from firebase_admin import auth
+from firebase_admin import credentials
 
+from app.core.config import settings
+
+
+firebase_credentials = json.loads(
+    settings.FIREBASE_CREDENTIALS
+)
 
 cred = credentials.Certificate(
-    "app/core/firebase_credentials.json"
+    firebase_credentials
 )
 
 if not firebase_admin._apps:
