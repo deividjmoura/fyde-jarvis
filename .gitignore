@@ -1,6 +1,9 @@
 venv/
 __pycache__/
+*.pyc
 .env
+*.env
 .pytest_cache/
+*.pyc
 # Firebase
 firebase_credentials.json
