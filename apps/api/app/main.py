@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.routes import health
 from app.api.routes import auth
+from app.api.routes import agent   # ← Nova linha
 from app.core.config import settings
 
 from app.db.session import engine
@@ -26,7 +27,7 @@ Base.metadata.create_all(bind=engine)
 
 app.include_router(health.router)
 app.include_router(auth.router)
-
+app.include_router(agent.router)   # ← Nova linha
 
 @app.get("/")
 def root():
