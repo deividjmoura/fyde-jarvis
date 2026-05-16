@@ -2,14 +2,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.routes import health
+from app.api.routes import auth
 from app.core.config import settings
 
 from app.db.session import engine
 from app.db.base import Base
-
-from app.db.models import User
-from app.services.firebase import verify_firebase_token
-
 
 app = FastAPI(
     title=settings.APP_NAME,
@@ -28,6 +25,7 @@ app.add_middleware(
 Base.metadata.create_all(bind=engine)
 
 app.include_router(health.router)
+app.include_router(auth.router)
 
 
 @app.get("/")

@@ -8,7 +8,8 @@ cred = credentials.Certificate(
     "app/core/firebase_credentials.json"
 )
 
-firebase_admin.initialize_app(cred)
+if not firebase_admin._apps:
+    firebase_admin.initialize_app(cred)
 
 
 def verify_firebase_token(token: str):
