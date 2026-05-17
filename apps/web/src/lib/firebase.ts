@@ -30,3 +30,6 @@ export const auth = getAuth(app)
 
 export const googleProvider =
   new GoogleAuthProvider()
+
+  console.log("PROJECT ID:", import.meta.env.VITE_FIREBASE_PROJECT_ID)
+console.log("AUTH DOMAIN:", import.meta.env.VITE_FIREBASE_AUTH_DOMAIN)

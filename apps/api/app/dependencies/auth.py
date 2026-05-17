@@ -11,6 +11,8 @@ def get_current_user(
     db: Session = Depends(get_db)
 ):
 
+    print("AUTH HEADER:", authorization)
+
     if not authorization:
         raise HTTPException(
             status_code=401,
@@ -20,6 +22,9 @@ def get_current_user(
     try:
         scheme, token = authorization.split()
 
+        print("SCHEME:", scheme)
+        print("TOKEN RECEIVED:", token[:30])
+
         if scheme.lower() != "bearer":
             raise HTTPException(
                 status_code=401,
@@ -27,6 +32,8 @@ def get_current_user(
             )
 
         decoded_token = verify_firebase_token(token)
+
+        print("DECODED TOKEN:", decoded_token)
 
         firebase_uid = decoded_token.get("uid")
         email = decoded_token.get("email")
@@ -49,8 +56,10 @@ def get_current_user(
 
         return user
 
-    except Exception:
+    except Exception as e:
+        print("AUTH ERROR:", str(e))
+
         raise HTTPException(
             status_code=401,
-            detail="Invalid or expired token"
+            detail=str(e)
         )
