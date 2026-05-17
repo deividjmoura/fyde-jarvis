@@ -372,3 +372,95 @@ GOOGLE
   background:
     rgba(120,166,255,0.04);
 }
+/* =========================
+PASSWORD STRENGTH
+========================= */
+
+.password-strength {
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 12px;
+
+  letter-spacing: 2px;
+
+  text-transform: uppercase;
+
+  border: 1px solid;
+
+  margin-top: -6px;
+}
+
+.password-strength.weak {
+  color: #ff6b6b;
+
+  border-color:
+    rgba(255,107,107,0.3);
+
+  background:
+    rgba(255,107,107,0.05);
+}
+
+.password-strength.medium {
+  color: #ffd166;
+
+  border-color:
+    rgba(255,209,102,0.3);
+
+  background:
+    rgba(255,209,102,0.05);
+}
+
+.password-strength.strong {
+  color: #7dffb3;
+
+  border-color:
+    rgba(125,255,179,0.3);
+
+  background:
+    rgba(125,255,179,0.05);
+}
+
+/* =========================
+MESSAGES
+========================= */
+
+.success-message,
+.error-message {
+  min-height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 12px;
+
+  font-size: 12px;
+
+  letter-spacing: 1px;
+
+  text-align: center;
+}
+
+.success-message {
+  color: #7dffb3;
+
+  border:
+    1px solid rgba(125,255,179,0.2);
+
+  background:
+    rgba(125,255,179,0.05);
+}
+
+.error-message {
+  color: #ff8f8f;
+
+  border:
+    1px solid rgba(255,143,143,0.2);
+
+  background:
+    rgba(255,143,143,0.05);
+}

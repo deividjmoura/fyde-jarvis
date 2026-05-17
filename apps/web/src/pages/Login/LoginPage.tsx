@@ -1,6 +1,7 @@
 import CyberInput from '../../components/ui/CyberInput'
 import GoogleButton from '../../components/ui/GoogleButton'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import {
   createUserWithEmailAndPassword,
@@ -20,12 +21,33 @@ const [email, setEmail] =
 
 const [password, setPassword] =
   useState('')
+
+const [message, setMessage] =
+  useState('')
+
+const [errorMessage, setErrorMessage] =
+  useState('')
+  const navigate = useNavigate()
+  const passwordStrength = useMemo(() => {
+
+  if (password.length < 6)
+    return 'weak'
+
+  if (password.length < 10)
+    return 'medium'
+
+  return 'strong'
+
+}, [password])
   async function handleAuth(
   event: React.FormEvent
 ) {
 
+
   event.preventDefault()
 
+  setMessage('')
+  setErrorMessage('')
   try {
 
     if (isRegistering) {
@@ -37,8 +59,10 @@ const [password, setPassword] =
           password
         )
 
-      console.log('user created')
-
+          setMessage(
+      'Account created successfully'
+)
+      navigate('/home')
       console.log(result.user)
 
     } else {
@@ -50,17 +74,22 @@ const [password, setPassword] =
           password
         )
 
-      console.log('login success')
-
+      setMessage(
+      'Login successful'
+      )
+      navigate('/home')
       console.log(result.user)
 
     }
 
-  } catch (error) {
+    } catch (error: any) {
 
-    console.error(error)
+      console.error(error)
 
-  }
+      setErrorMessage(
+        error.message
+      )
+    }
 }
   return (
     <div className="login-screen">
@@ -104,7 +133,15 @@ const [password, setPassword] =
             setPassword(e.target.value)
           }
 />
+          {password && (
 
+          <div
+            className={`password-strength ${passwordStrength}`}
+          >
+            {passwordStrength}
+          </div>
+
+          )}
           <button
             className="login-button"
             type="submit"
@@ -113,6 +150,17 @@ const [password, setPassword] =
             ? 'CREATE ACCOUNT'
             : 'INITIALIZE'}
           </button>
+          {message && (
+          <div className="success-message">
+            {message}
+          </div>
+        )}
+
+          {errorMessage && (
+          <div className="error-message">
+            {errorMessage}
+          </div>
+        )}
           <button
           className="register-button"
           type="button"
