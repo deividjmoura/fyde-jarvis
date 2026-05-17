@@ -3,6 +3,9 @@ import axios from 'axios';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
+import ParticleBackground from '../../components/background/ParticleBackground';
+import './home.css';
+
 interface Message {
   id: string;
   role: 'user' | 'assistant';
@@ -11,7 +14,7 @@ interface Message {
 }
 
 export default function HomePage() {
-  const { user, loading, logout, getToken } = useAuth();   // ← getToken aqui
+  const { user, loading, logout, getToken } = useAuth();
   const navigate = useNavigate();
 
   const [messages, setMessages] = useState<Message[]>([]);
@@ -22,9 +25,7 @@ export default function HomePage() {
   const API_URL = 'https://fyde-jarvis-api.onrender.com';
 
   useEffect(() => {
-    if (!loading && !user) {
-      navigate('/');
-    }
+    if (!loading && !user) navigate('/');
   }, [user, loading, navigate]);
 
   const scrollToBottom = () => {
@@ -52,10 +53,7 @@ export default function HomePage() {
 
     try {
       const token = await getToken();
-
-      if (!token) {
-        throw new Error("Não foi possível obter token de autenticação");
-      }
+      if (!token) throw new Error("Token inválido");
 
       const response = await axios.post(
         `${API_URL}/agent/chat-test`,
@@ -70,7 +68,6 @@ export default function HomePage() {
       );
 
       let responseText = "Sem resposta";
-
       if (typeof response.data === 'string') responseText = response.data;
       else if (response.data?.response) responseText = response.data.response;
       else if (response.data?.content) responseText = response.data.content;
@@ -84,14 +81,9 @@ export default function HomePage() {
       }]);
 
     } catch (error: any) {
-      console.error("Erro completo:", error);
-      let msg = "❌ Erro ao conectar com o Jarvis.";
-
-      if (error.response?.status === 401) {
-        msg = "❌ Sessão expirada. Faça login novamente.";
-      } else if (error.response?.data?.detail) {
-        msg = `❌ ${error.response.data.detail}`;
-      }
+      const msg = error.response?.status === 401 
+        ? "❌ Sessão expirada. Faça login novamente." 
+        : "❌ Erro ao conectar com o Jarvis.";
 
       setMessages(prev => [...prev, {
         id: (Date.now() + 1).toString(),
@@ -111,98 +103,62 @@ export default function HomePage() {
     }
   };
 
-  if (loading) return <div className="h-screen flex items-center justify-center bg-[#060b16] text-white">Carregando...</div>;
+  if (loading) return <div className="login-screen">Carregando sistema...</div>;
   if (!user) return null;
 
-  // ... (o resto do return com o JSX continua igual ao que eu te mandei antes)
-
   return (
-    <div className="flex h-screen bg-[#060b16] text-white">
-      <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full">
+    <div className="chat-screen">
+      <ParticleBackground />
 
-        {/* Header */}
-        <div className="border-b border-gray-800 p-4 flex items-center justify-between bg-[#0a0f1c]">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center text-2xl">
-              🤖
-            </div>
-            <div>
-              <h1 className="text-2xl font-semibold">Fyde Jarvis</h1>
-              <p className="text-sm text-emerald-400">● Online • Memória ativa</p>
-            </div>
+      <div className="corner corner-top">FYDE OS v0.8.4</div>
+      <div className="corner corner-bottom">NEURAL LINK ACTIVE</div>
+
+      <div className="chat-container">
+        <div className="chat-header">
+          <div className="system-info">
+            <div className="terminal-dot"></div>
+            JARVIS • ONLINE
           </div>
-
-          <button
-            onClick={logout}
-            className="px-5 py-2 bg-gray-800 hover:bg-red-500/20 hover:text-red-400 rounded-lg transition-colors"
-          >
-            Sair
-          </button>
+          <button onClick={logout} className="logout-btn">LOGOUT</button>
         </div>
 
-        {/* Área de Mensagens */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-[#060b16]">
+        <div className="chat-messages" ref={messagesEndRef}>
           {messages.length === 0 ? (
-            <div className="h-full flex flex-col items-center justify-center text-center">
-              <div className="text-6xl mb-6">👋</div>
-              <h2 className="text-3xl font-light mb-2">Olá, {user.email?.split('@')[0]}!</h2>
-              <p className="text-gray-400 max-w-md">
-                Como posso te ajudar hoje? Pode falar naturalmente.
-              </p>
+            <div style={{ textAlign: 'center', marginTop: '80px', opacity: 0.8 }}>
+              <h2 style={{ fontSize: '28px', marginBottom: '12px' }}>CONNECTION ESTABLISHED</h2>
+              <p>Bem-vindo de volta, Operador.</p>
+              <p className="text-green-400 mt-2">User ID: {user.email}</p>
             </div>
           ) : (
             messages.map((msg) => (
-              <div
-                key={msg.id}
-                className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-              >
-                <div
-                  className={`max-w-[80%] rounded-2xl px-5 py-3.5 ${
-                    msg.role === 'user'
-                      ? 'bg-blue-600 rounded-br-none'
-                      : 'bg-gray-800 rounded-bl-none'
-                  }`}
-                >
-                  <p className="whitespace-pre-wrap leading-relaxed">{msg.content}</p>
-                  <span className="text-[10px] opacity-60 mt-2 block">
-                    {msg.timestamp.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
-                  </span>
-                </div>
+              <div key={msg.id} className={`message ${msg.role}`}>
+                <div className="message-content">{msg.content}</div>
+                <span style={{ fontSize: '11px', opacity: 0.5, marginTop: '6px', display: 'block' }}>
+                  {msg.timestamp.toLocaleTimeString('pt-BR')}
+                </span>
               </div>
             ))
           )}
 
           {isLoading && (
-            <div className="flex justify-start">
-              <div className="bg-gray-800 rounded-2xl px-5 py-3 rounded-bl-none">
-                Jarvis está pensando...
-              </div>
+            <div className="message assistant">
+              <div className="message-content">PROCESSANDO SINAL NEURAL...</div>
             </div>
           )}
-
-          <div ref={messagesEndRef} />
         </div>
 
-        {/* Input Area */}
-        <div className="p-6 border-t border-gray-800 bg-[#060b16]">
-          <div className="flex gap-3">
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder="Digite sua mensagem aqui..."
-              className="flex-1 bg-gray-900 border border-gray-700 rounded-2xl px-6 py-4 focus:outline-none focus:border-blue-500 transition"
-              disabled={isLoading}
-            />
-            <button
-              onClick={sendMessage}
-              disabled={!input.trim() || isLoading}
-              className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 px-8 rounded-2xl font-medium transition"
-            >
-              Enviar
-            </button>
-          </div>
+        <div className="chat-input-area">
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyPress={handleKeyPress}
+            placeholder="DIGITE SUA MENSAGEM E PRESSIONE ENTER..."
+            disabled={isLoading}
+          />
+          <button onClick={sendMessage} disabled={!input.trim() || isLoading}>
+            TRANSMIT
+          </button>
         </div>
       </div>
     </div>
