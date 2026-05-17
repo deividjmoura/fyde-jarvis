@@ -36,6 +36,43 @@ export default function HomePage() {
     scrollToBottom();
   }, [messages]);
 
+  useEffect(() => {
+  const loadHistory = async () => {
+    if (!user) return;
+
+    try {
+      const token = await getToken();
+
+      if (!token) return;
+
+      const response = await axios.get(
+        `${API_URL}/agent/history`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      if (response.data?.messages) {
+        setMessages(
+          response.data.messages.map((msg: any, index: number) => ({
+            id: `${index}`,
+            role: msg.role,
+            content: msg.content,
+            timestamp: new Date()
+          }))
+        );
+      }
+
+    } catch (error) {
+      console.error("Erro ao carregar histórico:", error);
+    }
+  };
+
+  loadHistory();
+  }, [user]);
+  
   const sendMessage = async () => {
     if (!input.trim() || isLoading || !user) return;
 
@@ -56,7 +93,7 @@ export default function HomePage() {
       if (!token) throw new Error("Token inválido");
 
       const response = await axios.post(
-        `${API_URL}/agent/chat-test`,
+        `${API_URL}/agent/chat`,
         { query: currentInput },
         {
           timeout: 90000,
