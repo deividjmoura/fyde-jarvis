@@ -1,28 +1,17 @@
 * {
-  margin: 0;
-  padding: 0;
   box-sizing: border-box;
 }
 
-:root {
-  --bg: #060b16;
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
 
-  --panel: rgba(10, 16, 28, 0.94);
+  width: 100%;
+  height: 100%;
 
-  --line: rgba(95, 140, 255, 0.18);
-
-  --primary: #78a6ff;
-  --primary-soft: #4d7dff;
-
-  --text: #d9e6ff;
-  --muted: #6f7f9b;
-}
-
-body {
-  font-family: Arial, Helvetica, sans-serif;
-  background: var(--bg);
   overflow: hidden;
-  color: white;
 }
 
 /* =========================
@@ -30,437 +19,366 @@ SCREEN
 ========================= */
 
 .login-screen {
-  width: 100vw;
-  height: 100vh;
-
   position: relative;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 100%;
+  height: 100vh;
 
-  background:
-    radial-gradient(circle at top, #0f1728 0%, #060b16 70%);
-}
-
-/* =========================
-TECH GRID
-========================= */
-
-.bg-grid {
-  position: absolute;
-  inset: 0;
-
-  background-image:
-    linear-gradient(var(--line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--line) 1px, transparent 1px);
-
-  background-size: 60px 60px;
-
-  opacity: .45;
-}
-
-/* =========================
-CENTER GLOW
-========================= */
-
-.bg-glow {
-  position: absolute;
-
-  width: 700px;
-  height: 700px;
-
-  border-radius: 999px;
+  overflow: hidden;
 
   background:
     radial-gradient(
-      circle,
-      rgba(77,125,255,0.12),
-      transparent 70%
+      circle at center,
+      rgba(8,15,40,.85),
+      #02030a 75%
     );
 
-  filter: blur(40px);
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
 }
 
 /* =========================
-PANEL
+PARTICLE BG
 ========================= */
 
-.login-panel {
-  width: 420px;
+.particle-background {
+  position: absolute;
 
-  position: relative;
-  z-index: 2;
+  inset: 0;
 
-  padding: 36px;
+  width: 100%;
+  height: 100%;
 
-  background:
-    rgba(10, 16, 28, 0.92);
+  z-index: 0;
 
-  border:
-    1px solid rgba(120,166,255,0.14);
-
-  box-shadow:
-    0 0 30px rgba(77,125,255,0.08);
-
-  overflow: hidden;
+  opacity: .6;
 }
 
-/* CORNERS */
+/* =========================
+CARD
+========================= */
 
-.login-panel::before,
-.login-panel::after {
-  content: "";
+.auth-card {
+  position: relative;
+  
+  width: 100%;
+  max-width: 520px;
+
+  min-height: 620px;
+
+  padding: 52px;
+
+  z-index: 2;
+
+  background:
+    rgba(5,10,25,.28);
+
+  border:
+    1px solid rgba(108,99,255,.08);
+
+  backdrop-filter: blur(8px);
+
+  box-shadow:
+    0 0 80px rgba(0,0,0,.45);
+}
+
+/* =========================
+TABS
+========================= */
+
+.tabs {
+  display: flex;
+
+  justify-content: center;
+
+  gap: 48px;
+
+  margin-bottom: 42px;
+}
+
+.tab {
+  position: relative;
+
+  background: transparent;
+
+  border: none;
+
+  color:
+    rgba(255,255,255,.35);
+
+  font-size: 34px;
+
+  letter-spacing: 4px;
+
+  cursor: pointer;
+
+  transition: .25s;
+
+  text-align: center;
+}
+
+.tab.active {
+  color: white;
+}
+
+.tab.active::after {
+  content: '';
 
   position: absolute;
 
-  width: 42px;
-  height: 42px;
+  left: 0;
+  bottom: -12px;
 
-  border-color: var(--primary);
+  width: 52px;
+  height: 4px;
 
-  opacity: .7;
-}
-
-.login-panel::before {
-  top: 12px;
-  left: 12px;
-
-  border-top: 2px solid;
-  border-left: 2px solid;
-}
-
-.login-panel::after {
-  bottom: 12px;
-  right: 12px;
-
-  border-bottom: 2px solid;
-  border-right: 2px solid;
-}
-
-/* =========================
-HEADER
-========================= */
-
-.login-header {
-  margin-bottom: 36px;
-}
-
-.login-header h1 {
-  font-size: 40px;
-
-  letter-spacing: 8px;
-
-  font-weight: 900;
-
-  color: var(--text);
-
-  margin-bottom: 10px;
-}
-
-.login-header p {
-  color: var(--muted);
-
-  font-size: 12px;
-
-  letter-spacing: 3px;
-
-  text-transform: uppercase;
+  background:
+    linear-gradient(
+      90deg,
+      #b026ff,
+      #6c63ff
+    );
 }
 
 /* =========================
 FORM
 ========================= */
 
-.login-form {
+.auth-form {
   display: flex;
+
   flex-direction: column;
-  gap: 20px;
+
+  gap: 28px;
 }
 
 /* =========================
-INPUT
+INPUTS
 ========================= */
 
-.cyber-input-wrapper label {
-  display: block;
-
-  margin-bottom: 10px;
-
-  color: var(--primary);
-
-  font-size: 11px;
-
-  letter-spacing: 3px;
-}
-
-.cyber-input-box {
+.input-group {
   position: relative;
 }
 
-.cyber-input-box input {
+.input-group input {
   width: 100%;
-  height: 58px;
 
-  background:
-    rgba(255,255,255,0.02);
+  height: 54px;
 
-  border:
-    1px solid rgba(120,166,255,0.14);
+  background: transparent;
 
-  outline: none;
+  border: none;
 
-  padding: 0 18px;
+  border-bottom:
+    1px solid rgba(176,38,255,.6);
 
   color: white;
 
-  font-size: 14px;
+  font-size: 16px;
+
+  text-align: center;
 
   letter-spacing: 1px;
 
-  transition: .2s;
+  outline: none;
+
+  transition: .3s;
 }
 
-/* ACTIVE BAR */
-
-.cyber-line {
-  position: absolute;
-
-  left: 0;
-  bottom: 0;
-
-  width: 0%;
-  height: 2px;
-
-  background:
-    linear-gradient(
-      90deg,
-      transparent,
-      var(--primary),
-      transparent
-    );
-
-  transition: .25s;
+.input-group input::placeholder {
+  color:
+    rgba(255,255,255,.3);
 }
 
-/* HOVER */
-
-.cyber-input-box:hover input {
-  border-color:
-    rgba(120,166,255,0.28);
-}
-
-/* FOCUS */
-
-.cyber-input-box:focus-within input {
-  border-color:
-    rgba(120,166,255,0.5);
-
-  background:
-    rgba(120,166,255,0.03);
+.input-group input:focus {
+  border-bottom:
+    1px solid #6c63ff;
 
   box-shadow:
-    inset 0 0 12px rgba(77,125,255,0.08),
-    0 0 16px rgba(77,125,255,0.08);
-}
-
-.cyber-input-box:focus-within .cyber-line {
-  width: 100%;
+    0 10px 30px rgba(108,99,255,.12);
 }
 
 /* =========================
 BUTTON
 ========================= */
 
-.login-button {
+.submit-button {
+  width: 100%;
+
   height: 58px;
 
-  margin-top: 8px;
+  margin-top: 12px;
 
-  border: none;
+  background: transparent;
 
-  background:
-    linear-gradient(
-      90deg,
-      #5f8cff,
-      #4d7dff
-    );
+  border:
+    1px solid rgba(176,38,255,.4);
 
   color: white;
-
-  font-weight: 800;
-
-  letter-spacing: 3px;
-
-  cursor: pointer;
-
-  transition: .2s;
-}
-
-.login-button:hover {
-  box-shadow:
-    0 0 24px rgba(77,125,255,0.25);
-
-  transform: translateY(-1px);
-}
-
-/* =========================
-DIVIDER
-========================= */
-
-.divider {
-  text-align: center;
-
-  color: var(--muted);
-
-  font-size: 11px;
 
   letter-spacing: 4px;
-}
-
-/* =========================
-GOOGLE
-========================= */
-
-.google-button {
-  height: 56px;
-
-  background:
-    rgba(255,255,255,0.02);
-
-  border:
-    1px solid rgba(255,255,255,0.08);
-
-  color: white;
 
   cursor: pointer;
 
-  transition: .2s;
+  transition: .3s;
 
-  letter-spacing: 1px;
+  font-size: 13px;
+
+  text-align: center;
 }
 
-.google-button:hover {
+.submit-button:hover {
+  background:
+    rgba(108,99,255,.14);
+
   border-color:
-    rgba(120,166,255,0.25);
+    #6c63ff;
 
-  background:
-    rgba(120,166,255,0.03);
-}
-.register-button {
-  height: 54px;
-
-  background:
-    rgba(255,255,255,0.02);
-
-  border:
-    1px solid rgba(120,166,255,0.14);
-
-  color: white;
-
-  cursor: pointer;
-
-  letter-spacing: 2px;
-
-  transition: .2s;
+  box-shadow:
+    0 0 30px rgba(108,99,255,.18);
 }
 
-.register-button:hover {
-  border-color:
-    rgba(120,166,255,0.4);
-
-  background:
-    rgba(120,166,255,0.04);
-}
 /* =========================
-PASSWORD STRENGTH
+RESET PASSWORD
 ========================= */
 
-.password-strength {
-  height: 42px;
+.forgot-password {
+  margin-top: -18px;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  text-align: right;
+
+  color:
+    rgba(176,38,255,.8);
 
   font-size: 12px;
 
-  letter-spacing: 2px;
-
-  text-transform: uppercase;
-
-  border: 1px solid;
-
-  margin-top: -6px;
+  cursor: pointer;
 }
 
-.password-strength.weak {
-  color: #ff6b6b;
-
-  border-color:
-    rgba(255,107,107,0.3);
-
-  background:
-    rgba(255,107,107,0.05);
-}
-
-.password-strength.medium {
-  color: #ffd166;
-
-  border-color:
-    rgba(255,209,102,0.3);
-
-  background:
-    rgba(255,209,102,0.05);
-}
-
-.password-strength.strong {
-  color: #7dffb3;
-
-  border-color:
-    rgba(125,255,179,0.3);
-
-  background:
-    rgba(125,255,179,0.05);
+.forgot-password:hover {
+  opacity: .7;
 }
 
 /* =========================
 MESSAGES
 ========================= */
 
-.success-message,
-.error-message {
-  min-height: 48px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: 12px;
-
-  font-size: 12px;
-
-  letter-spacing: 1px;
-
-  text-align: center;
-}
-
 .success-message {
   color: #7dffb3;
 
-  border:
-    1px solid rgba(125,255,179,0.2);
-
-  background:
-    rgba(125,255,179,0.05);
+  font-size: 13px;
 }
 
 .error-message {
   color: #ff8f8f;
 
-  border:
-    1px solid rgba(255,143,143,0.2);
+  font-size: 13px;
+}
+
+/* =========================
+PASSWORD STRENGTH
+========================= */
+
+.password-strength {
+  font-size: 11px;
+
+  letter-spacing: 2px;
+
+  text-transform: uppercase;
+}
+
+.password-strength.weak {
+  color: #ff6b6b;
+}
+
+.password-strength.medium {
+  color: #ffd166;
+}
+
+.password-strength.strong {
+  color: #7dffb3;
+}
+
+/* =========================
+CORNERS
+========================= */
+
+.corner {
+  position: absolute;
+
+  z-index: 2;
+
+  color:
+    rgba(255,255,255,.7);
+
+  letter-spacing: 6px;
+
+  font-size: 12px;
+}
+
+.corner-top {
+  top: 32px;
+  left: 32px;
+}
+
+.corner-bottom {
+  right: 32px;
+  bottom: 32px;
+}
+
+.corner-top::after,
+.corner-bottom::after {
+  content: '';
+
+  position: absolute;
+
+  left: 0;
+  top: 22px;
+
+  width: 72px;
+  height: 1px;
 
   background:
-    rgba(255,143,143,0.05);
+    linear-gradient(
+      90deg,
+      #6c63ff,
+      transparent
+    );
+}
+.password-strength {
+  margin-top: -12px;
+
+  font-size: 11px;
+
+  letter-spacing: 2px;
+}
+
+.password-strength ul {
+  margin-top: 8px;
+
+  padding-left: 16px;
+
+  opacity: .7;
+}
+
+.password-strength li {
+  margin-bottom: 4px;
+}
+.auth-divider {
+  margin-top: 12px;
+
+  text-align: center;
+
+  font-size: 11px;
+
+  letter-spacing: 4px;
+
+  opacity: .4;
 }

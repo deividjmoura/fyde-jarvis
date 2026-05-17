@@ -1,86 +1,118 @@
-import CyberInput from '../../components/ui/CyberInput'
-import GoogleButton from '../../components/ui/GoogleButton'
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import {
   createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
 } from 'firebase/auth'
 
 import { auth } from '../../services/firebase'
 
+import ParticleBackground from '../../components/background/ParticleBackground'
+import GoogleButton from '../../components/ui/GoogleButton'
+
 import './login.css'
 
+type TabType =
+  | 'login'
+  | 'register'
+
 export default function LoginPage() {
-  const [isRegistering, setIsRegistering] =
-  useState(false)
 
-const [email, setEmail] =
-  useState('')
+  const navigate =
+    useNavigate()
 
-const [password, setPassword] =
-  useState('')
+  const [activeTab, setActiveTab] =
+    useState<TabType>('login')
 
-const [message, setMessage] =
-  useState('')
+  const [email, setEmail] =
+    useState('')
 
-const [errorMessage, setErrorMessage] =
-  useState('')
-  const navigate = useNavigate()
-  const passwordStrength = useMemo(() => {
+  const [password, setPassword] =
+    useState('')
 
-  if (password.length < 6)
-    return 'weak'
+  const [message, setMessage] =
+    useState('')
 
-  if (password.length < 10)
-    return 'medium'
+  const [errorMessage, setErrorMessage] =
+    useState('')
+  const [loginAttempts, setLoginAttempts] =
+  useState(0)
+  const passwordValidation = useMemo(() => {
 
-  return 'strong'
+  if (!password) return null
+
+  const validations = {
+    uppercase:
+      /[A-Z]/.test(password),
+
+    special:
+      /[^A-Za-z0-9]/.test(password),
+
+    number:
+      /\d/.test(password),
+
+    minLength:
+      password.length >= 8,
+  }
+
+  const passed =
+    Object.values(validations)
+      .filter(Boolean).length
+
+  let strength = 'weak'
+
+  if (passed >= 3)
+    strength = 'medium'
+
+  if (passed === 4)
+    strength = 'strong'
+
+  return {
+    strength,
+    validations,
+  }
 
 }, [password])
+
   async function handleAuth(
-  event: React.FormEvent
-) {
+    event: React.FormEvent
+  ) {
 
+    event.preventDefault()
 
-  event.preventDefault()
+    setMessage('')
+    setErrorMessage('')
 
-  setMessage('')
-  setErrorMessage('')
-  try {
+    try {
 
-    if (isRegistering) {
+      if (activeTab === 'register') {
 
-      const result =
         await createUserWithEmailAndPassword(
           auth,
           email,
           password
         )
 
-          setMessage(
-      'Account created successfully'
-)
-      navigate('/home')
-      console.log(result.user)
+        setMessage(
+          'Account created successfully'
+        )
 
-    } else {
+      } else {
 
-      const result =
         await signInWithEmailAndPassword(
           auth,
           email,
           password
         )
 
-      setMessage(
-      'Login successful'
-      )
-      navigate('/home')
-      console.log(result.user)
+        setMessage(
+          'Login successful'
+        )
+      }
 
-    }
+      navigate('/home')
 
     } catch (error: any) {
 
@@ -90,95 +122,206 @@ const [errorMessage, setErrorMessage] =
         error.message
       )
     }
-}
+  }
+
+  async function handleResetPassword() {
+
+    try {
+
+      setMessage('')
+      setErrorMessage('')
+
+      if (!email) {
+
+        setErrorMessage(
+          'Enter your email first'
+        )
+
+        return
+      }
+
+      await sendPasswordResetEmail(
+        auth,
+        email
+      )
+
+      setMessage(
+        'Password reset email sent'
+      )
+
+    } catch (error: any) {
+
+      setErrorMessage(
+        error.message
+      )
+      if (activeTab === 'login') {
+
+      setLoginAttempts(
+        (prev) => prev + 1
+      )
+    }
+    }
+  }
+
   return (
+
     <div className="login-screen">
 
-      <div className="bg-grid"></div>
-      <div className="bg-glow"></div>
+      <ParticleBackground />
 
-      <div className="login-panel">
+      <div className="corner corner-top">
+        FYDE
+      </div>
 
-        <div className="login-header">
+      <div className="corner corner-bottom">
+        AI SYSTEM INTERFACE
+      </div>
 
-          <h1>FYDE</h1>
+      <div className="auth-card">
 
-          <p>
-            ARTIFICIAL INTELLIGENCE SYSTEM
-          </p>
+        <div className="tabs">
+
+          <button
+            className={
+              activeTab === 'login'
+                ? 'tab active'
+                : 'tab'
+            }
+            onClick={() =>
+              setActiveTab('login')
+            }
+          >
+            LOGIN
+          </button>
+
+          <button
+            className={
+              activeTab === 'register'
+                ? 'tab active'
+                : 'tab'
+            }
+            onClick={() =>
+              setActiveTab('register')
+            }
+          >
+            SIGN IN
+          </button>
 
         </div>
 
         <form
-        className="login-form"
-        onSubmit={handleAuth}
->
+          className="auth-form"
+          onSubmit={handleAuth}
+        >
 
-          <CyberInput
-          label="EMAIL"
-          type="email"
-          placeholder="user@fyde.ai"
-          value={email}
-          onChange={(e) =>
-            setEmail(e.target.value)
-          }
-        />
+          <div className="input-group">
 
-                  <CyberInput
-          label="PASSWORD"
-          type="password"
-          placeholder="••••••••"
-          value={password}
-          onChange={(e) =>
-            setPassword(e.target.value)
-          }
-/>
-          {password && (
+            <input
+              type="email"
+              placeholder="Enter your Email"
+              value={email}
+              onChange={(e) =>
+                setEmail(
+                  e.target.value
+                )
+              }
+            />
 
-          <div
-            className={`password-strength ${passwordStrength}`}
-          >
-            {passwordStrength}
           </div>
+
+          <div className="input-group">
+
+            <input
+              type="password"
+              placeholder="Enter your Password"
+              value={password}
+              onChange={(e) =>
+                setPassword(
+                  e.target.value
+                )
+              }
+            />
+
+          </div>
+
+          {activeTab === 'register' && passwordValidation && (
+
+            <div
+              className={`password-strength ${passwordValidation.strength}`}
+            >
+
+              <span>
+                {passwordValidation.strength.toUpperCase()}
+              </span>
+
+              <ul>
+
+                {!passwordValidation.validations.minLength && (
+                  <li>minimum 8 characters</li>
+                )}
+
+                {!passwordValidation.validations.uppercase && (
+                  <li>one uppercase letter</li>
+                )}
+
+                {!passwordValidation.validations.number && (
+                  <li>one number</li>
+                )}
+
+                {!passwordValidation.validations.special && (
+                  <li>one special character</li>
+                )}
+
+              </ul>
+
+            </div>
 
           )}
+
+          {activeTab === 'login'
+            && loginAttempts >= 3 && (
+
+            <div
+              className="forgot-password"
+              onClick={
+                handleResetPassword
+              }
+            >
+              forgot password?
+            </div>
+
+          )}
+
           <button
-            className="login-button"
+            className="submit-button"
             type="submit"
           >
-            {isRegistering
-            ? 'CREATE ACCOUNT'
-            : 'INITIALIZE'}
+            {activeTab === 'login'
+              ? 'INITIALIZE'
+              : 'CREATE ACCOUNT'}
           </button>
-          {message && (
-          <div className="success-message">
-            {message}
-          </div>
-        )}
 
-          {errorMessage && (
-          <div className="error-message">
-            {errorMessage}
-          </div>
-        )}
-          <button
-          className="register-button"
-          type="button"
-          onClick={() =>
-            setIsRegistering(
-              !isRegistering
-            )
-          }
-        >
-          {isRegistering
-            ? 'BACK TO LOGIN'
-            : 'CREATE ACCOUNT'}
-</button>
-          <div className="divider">
-            EXTERNAL AUTH
+          <div className="auth-divider">
+            OR
           </div>
 
           <GoogleButton />
+
+          {message && (
+
+            <div className="success-message">
+              {message}
+            </div>
+
+          )}
+
+          {errorMessage && (
+
+            <div className="error-message">
+              {errorMessage}
+            </div>
+
+          )}
 
         </form>
 
