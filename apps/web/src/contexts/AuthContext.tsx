@@ -31,7 +31,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const getToken = async (): Promise<string | null> => {
     if (!user) return null;
     try {
-      return await user.getIdToken(true); // true = força refresh
+      return await user.getIdToken();
     } catch (error) {
       console.error("Erro ao obter token:", error);
       return null;

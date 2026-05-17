@@ -36,9 +36,9 @@ export default function HomePage() {
     scrollToBottom();
   }, [messages]);
 
-  useEffect(() => {
+useEffect(() => {
   const loadHistory = async () => {
-    if (!user) return;
+    if (loading || !user) return;
 
     try {
       const token = await getToken();
@@ -71,8 +71,8 @@ export default function HomePage() {
   };
 
   loadHistory();
-  }, [user]);
-  
+}, [user, loading]);
+
   const sendMessage = async () => {
     if (!input.trim() || isLoading || !user) return;
 
