@@ -42,7 +42,12 @@ export default function LoginPage() {
           >
             INITIALIZE
           </button>
-
+          <button
+          className="register-button"
+          type="button"
+          >
+            CREATE ACCOUNT
+          </button>
           <div className="divider">
             EXTERNAL AUTH
           </div>
