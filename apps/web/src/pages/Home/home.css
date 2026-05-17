@@ -175,7 +175,8 @@
 
 @media (max-width: 768px) {
   .chat-container {
-    height: 100vh;
+    min-height: 100dvh;
+    height: 100dvh;
     margin: 0;
     border: none;
     border-radius: 0;
@@ -193,20 +194,11 @@
   
   .chat-input-area {
     padding: 12px 16px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
   }
   
   .chat-header {
     padding: 14px 16px;
     font-size: 13px;
-  }
-}
-
-@media (max-width: 480px) {
-  .message {
-    max-width: 95%;
-  }
-  
-  .chat-input-area input {
-    font-size: 15.5px;
   }
 }
