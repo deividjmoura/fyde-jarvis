@@ -347,3 +347,28 @@ GOOGLE
   background:
     rgba(120,166,255,0.03);
 }
+.register-button {
+  height: 54px;
+
+  background:
+    rgba(255,255,255,0.02);
+
+  border:
+    1px solid rgba(120,166,255,0.14);
+
+  color: white;
+
+  cursor: pointer;
+
+  letter-spacing: 2px;
+
+  transition: .2s;
+}
+
+.register-button:hover {
+  border-color:
+    rgba(120,166,255,0.4);
+
+  background:
+    rgba(120,166,255,0.04);
+}
