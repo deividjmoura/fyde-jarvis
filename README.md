@@ -1,85 +1,216 @@
 # Fyde Jarvis
 
-<div align="center">
+**Assistente IA híbrido** — cérebro na nuvem (memória persistente + tools) + corpo local (voz + controle do PC).
 
-![Status](https://img.shields.io/badge/Status-Em%20Desenvolvimento-success?style=for-the-badge)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.136.1-009688?style=for-the-badge&logo=fastapi)
-![LangGraph](https://img.shields.io/badge/LangGraph-1.2.0-4B0082?style=for-the-badge)
-![Neon](https://img.shields.io/badge/Neon-Postgres-00B4D8?style=for-the-badge&logo=neon)
-
-**Assistente IA inteligente com memória persistente por usuário**
-
-</div>
-
-## ✨ Funcionalidades
-
-- **Memória Persistente por Usuário** usando Neon Postgres + LangGraph
-- Autenticação segura com Firebase
-- Agente Reativo com ferramentas (data/hora, calculadora, etc)
-- System Prompt bem definido com personalidade brasileira
-- Checkpointer assíncrono otimizado para Neon
-- Pronto para produção (Render + Neon)
-
-## 🛠 Tecnologias
-
-- **FastAPI** — Framework principal
-- **LangGraph** — Construção do agente e memória
-- **Neon Postgres** — Banco de dados + checkpoints
-- **Firebase Admin SDK** — Autenticação
-- **OpenRouter** — Integração com Claude 3 Haiku
-- **SQLAlchemy** — ORM
-
-## 🚀 Como Executar
-
-### 1. Clone o projeto
-
-```bash
-git clone https://github.com/deividjmoura/fyde-jarvis.git
-cd fyde-jarvis
+```
+Você fala  →  Cliente local (Whisper)
+                    ↓
+              API FastAPI + LangGraph (memória Neon)
+                    ↓
+              Cliente local (Piper fala a resposta)
+                    ↓
+         (fase 2) executa ações no seu computador
 ```
 
-### 2. Configure e rode o Backend
+---
+
+## Arquitetura
+
+| Camada | Pasta | Responsabilidade |
+|--------|-------|------------------|
+| **Cérebro** | `apps/api` | FastAPI + LangGraph + memória por usuário (Neon) + tools |
+| **Interface web** | `apps/web` | React + Firebase Auth (opcional no modo pessoal) |
+| **Corpo (voz)** | `voice-client/` | Microfone → Whisper → API → Piper |
+
+---
+
+## Pré-requisitos
+
+- Python 3.11+
+- Conta no [Neon](https://neon.tech) (Postgres gratuito)
+- Chave [OpenRouter](https://openrouter.ai) (ou depois trocamos por Groq/Ollama)
+- (Opcional) Projeto Firebase se quiser auth
+
+---
+
+## 1. Backend (cérebro)
 
 ```bash
 cd apps/api
 
-# Copie o arquivo de ambiente
-cp .env.example .env
+# Ambiente virtual
+python -m venv .venv
+source .venv/bin/activate          # Linux/macOS
+# .venv\Scripts\activate           # Windows
 
-# Instale as dependências
 pip install -r requirements.txt
 
-# Rode o servidor
-uvicorn app.main:app --reload
+# Configuração
+cp .env.example .env
+# Edite o .env (veja seção abaixo)
+
+# Sobe a API
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-## 📡 Endpoints Principais
+API disponível em: `http://localhost:8000`  
+Docs interativas: `http://localhost:8000/docs`
 
-| Método | Rota | Descrição | Autenticação |
-|--------|------|-----------|--------------|
-| POST | /agent/chat | Conversa com o Jarvis | Sim |
-| POST | /agent/chat-test | Teste rápido (sem token) | Não |
-| GET | /auth/me | Informações do usuário logado | Sim |
+### Variáveis de ambiente (`apps/api/.env`)
 
-## 🔑 Variáveis de Ambiente
+```env
+# Obrigatórias
+DATABASE_URL=postgresql+psycopg2://user:pass@ep-xxxx.us-east-2.aws.neon.tech/neondb?sslmode=require
+OPENROUTER_API_KEY=sk-or-v1-...
+SECRET_KEY=uma-string-longa-e-aleatoria
 
-- DATABASE_URL → URL do Neon Postgres
-- OPENROUTER_API_KEY → Chave da OpenRouter
-- FIREBASE_CREDENTIALS → JSON da Service Account do Firebase
+# Firebase (só se for usar auth real)
+FIREBASE_CREDENTIALS={"type":"service_account", ...}
 
-## 🧠 Sobre a Memória
+# Opcional
+LLM_PROVIDER=openrouter
+LLM_MODEL=anthropic/claude-3-haiku
+```
 
-Cada usuário tem sua própria conversa persistente, vinculada ao firebase_uid. A memória não é perdida ao reiniciar o servidor.
+> **Dica Neon:** no dashboard do Neon copie a connection string e troque o início para `postgresql+psycopg2://` se necessário.
 
-## 🔮 Roadmap
+### Endpoints principais
 
-- Múltiplas conversas por usuário
-- Streaming de respostas em tempo real
-- Endpoint de histórico completo
-- Ferramentas avançadas (busca na internet, etc)
-- Frontend web
+| Método | Rota | Auth | Uso |
+|--------|------|------|-----|
+| `POST` | `/agent/chat-test` | Não | Ideal para o cliente de voz e testes |
+| `POST` | `/agent/chat` | Sim (Firebase) | Chat autenticado |
+| `GET`  | `/agent/history` | Sim | Histórico da conversa |
+| `GET`  | `/auth/me` | Sim | Dados do usuário logado |
+| `GET`  | `/` | Não | Health check |
+
+**Exemplo de teste rápido:**
+
+```bash
+curl -X POST http://localhost:8000/agent/chat-test \
+  -H "Content-Type: application/json" \
+  -d '{"query": "Que horas são?"}'
+```
 
 ---
 
-Desenvolvido com ❤️ por Deivid Moura
+## 2. Cliente de voz (corpo local)
 
+O cliente fica na pasta `voice-client/` (mesmo repositório ou separado).
+
+### Instalação no CachyOS / Arch
+
+```bash
+# Dependências de sistema
+sudo pacman -S --needed portaudio python-pip python-virtualenv
+paru -S piper-tts          # ou baixe o binário (veja voice-client/README)
+
+cd voice-client
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+
+# Voz em português
+mkdir -p models/piper && cd models/piper
+wget https://huggingface.co/rhasspy/piper-voices/resolve/main/pt/pt_BR/faber/medium/pt_BR-faber-medium.onnx
+wget https://huggingface.co/rhasspy/piper-voices/resolve/main/pt/pt_BR/faber/medium/pt_BR-faber-medium.onnx.json
+cd ../..
+
+cp .env.example .env
+# Edite: JARVIS_API_URL=http://localhost:8000
+```
+
+### Rodar
+
+```bash
+# Terminal 1 – API
+cd apps/api && source .venv/bin/activate
+uvicorn app.main:app --reload --port 8000
+
+# Terminal 2 – Voz
+cd voice-client && source .venv/bin/activate
+python main.py
+```
+
+Fluxo:
+1. Você fala
+2. Whisper transcreve
+3. Cliente chama `POST /agent/chat-test`
+4. LangGraph responde (com memória)
+5. Piper fala a resposta
+
+---
+
+## 3. Frontend web (opcional)
+
+```bash
+cd apps/web
+npm install
+# configure as variáveis do Firebase
+npm run dev
+```
+
+---
+
+## Roadmap
+
+### Agora (híbrido básico)
+- [x] API + memória persistente
+- [x] Cliente de voz local → API
+- [ ] README e `.env.example` limpos
+
+### Próximo
+- [ ] Mais tools no LangGraph (busca web, clima, etc.)
+- [ ] Cliente local executa comandos do sistema com confirmação verbal
+- [ ] Modo 100% local (Ollama) quando a API estiver offline
+- [ ] Streaming de resposta
+- [ ] Wake word (“Jarvis”)
+
+### Depois
+- [ ] Múltiplas conversas por usuário
+- [ ] Controle de desktop (abrir apps, digitar, etc.)
+- [ ] Integração com MCP / skills
+
+---
+
+## Estrutura do repositório
+
+```
+fyde-jarvis/
+├── apps/
+│   ├── api/                 # Cérebro (FastAPI + LangGraph)
+│   │   ├── app/
+│   │   │   ├── api/routes/  # agent, auth, health
+│   │   │   ├── core/        # config, checkpointer
+│   │   │   ├── services/
+│   │   │   │   ├── agents/  # first_agent.py
+│   │   │   │   └── llm/     # provider.py
+│   │   │   └── ...
+│   │   ├── .env.example
+│   │   └── requirements.txt
+│   └── web/                 # Frontend React
+├── voice-client/            # Cliente de voz local (Whisper + Piper)
+├── docker-compose.yml
+└── README.md
+```
+
+---
+
+## Problemas comuns
+
+**Erro de conexão com Neon**  
+→ Verifique `sslmode=require` e se a connection string está limpa (sem `+psycopg2` no checkpointer se der conflito).
+
+**`OPENROUTER_API_KEY` não encontrada**  
+→ Confirme que o `.env` está em `apps/api/` e que você rodou o uvicorn de dentro dessa pasta.
+
+**Cliente de voz não acha a API**  
+→ `JARVIS_API_URL=http://localhost:8000` no `.env` do voice-client. Firewall/localhost ok?
+
+**Piper não encontrado**  
+→ Binário precisa estar no `PATH` (`which piper`).
+
+---
+
+Desenvolvido com ❤️ por Deivid Moura  
+Arquitetura híbrida evoluída com o Grok.
