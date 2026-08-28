@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+models/piper/*.onnx
+models/piper/*.json
+!models/piper/.gitkeep
+*.wav
+.DS_Store
