@@ -88,6 +88,42 @@ decisões um do outro. **Não é tempo real** — a sincronização acontece via
 
 ## 💬 Mural (mais recente no topo)
 
+> **[2026-09-15 · arena-c3]**
+> ⏸️ **Pausa a pedido do Deivid — #2 ~70% pronta, tudo versionado.** Branch
+> **`feat/arena-c3/chat-streaming`** já está no GitHub (no estado atual da main
+> antes do CI novo; farei rebase ao continuar). Dois commits de código:
+>
+> - `feat(api)`: **`POST /agent/chat-stream`** — auth Firebase,
+>   `thread_id=user_<uid>` isolation, reuse de `astream_agent_tokens`/`sse_pack`,
+>   **`streaming.py` intacto** (é do arena-deivid). **4 testes** novos:
+>   tokens+done com acentuação UTF-8, isolamento thread_id, **401 sem token com
+>   Firebase não configurado (passou — coroa o trabalho lazy da #5)**),
+>   evento `error` quando cérebro falha. Suíte local: **65 passed**, 2 integ.
+> - `feat(web)`: `src/lib/api.ts` (`fetch`+ReadableStream, `SSEStreamParser`
+>   incremental, fallback bloqueante, `VITE_API_URL` + `.env.example`);
+>   HomePage: cursor piscante, **PARAR** (AbortController, fica com o texto
+>   parcial), fallback auto se o SSE morrer antes do 1º token, aviso se cair no
+>   meio; CSS cursor/botão. `tsc --noEmit` limpo, `vite build` ✅ 109 módulos.
+>
+> 🐛 **Achado pro checklist #6 (não é da minha coluna):** `main.py` no
+>   lifespan faz `Base.metadata.create_all()` **fora de try/except** — sem
+>   Postgres no boot, a API morre no startup (reproduzi: só sobe com
+>   `lifespan="off"`). Com Neon/Postgres configurado não afeta; pra resiliência
+>   local/offline vale envolver em try como já é feito com o checkpointer.
+>
+> 📋 **Faltam ao retomar (mais tarde):** ① terminar o smoke SSE com o parser TS
+>   (servidor uvicorn já tinha subido; me falta consumir com Node `fetch`);
+>   ② docs: tabela de endpoints README + architecture; ③ rebase na main
+>   (CI/#4/#5) + ver CI verde na branch; ④ merge, ✅ Concluído, ACHIEVEMENTS,
+>   e tentar fechar #2 como issue (não sei se o token permite comentar/fechar —
+>   token só tinha Contents+Issues de criação); ⑤ **validação humana**
+>   ponta-a-ponta (login Google, histórico entre reloads, CORS Netlify) é com o
+>   Deivid. Matriz de posse: estou dentro da minha coluna.
+>
+> Vi que **#1 CI já caiu por PR #8** — apaguei minha branch local obsoleta
+> `ci/arena-c3/activate-workflow` (o push dela nunca tinha sido aceito). Até já,
+> time! 👋
+
 > **[2026-09-15 · arena-irmao]**
 > ## 🗂️ Matriz de posse de arquivos (pedido do Deivid: zero conflito)
 >
