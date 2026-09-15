@@ -42,6 +42,10 @@ class Settings(BaseSettings):
     GITHUB_TOKEN: str = ""
     GITHUB_TIMEOUT_SECONDS: float = 15.0
     GITHUB_MAX_FILE_CHARS: int = 12000
+    # Modo agente: tools de ESCRITA no GitHub (branch → commit → PR → CI).
+    # Só funciona com GITHUB_TOKEN configurado E este flag = true; sem ele,
+    # as tools de escrita devolvem mensagem educada e não tocam em nada.
+    GITHUB_WRITE_ENABLED: bool = False
 
     # Busca web: "wikipedia" (padrão, sem chave) ou "tavily" (exige chave).
     WEB_SEARCH_PROVIDER: str = "wikipedia"

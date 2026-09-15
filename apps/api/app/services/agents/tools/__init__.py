@@ -18,6 +18,12 @@ from app.services.agents.tools.github import (
     github_repo_info,
     github_search_repos,
 )
+from app.services.agents.tools.github_write import (
+    github_check_ci,
+    github_commit_file,
+    github_create_branch,
+    github_open_pull_request,
+)
 
 ALL_TOOLS = [
     get_current_time,
@@ -28,6 +34,10 @@ ALL_TOOLS = [
     github_list_files,
     github_read_file,
     github_search_repos,
+    github_create_branch,
+    github_commit_file,
+    github_open_pull_request,
+    github_check_ci,
 ]
 
 __all__ = [
@@ -40,4 +50,8 @@ __all__ = [
     "github_list_files",
     "github_read_file",
     "github_search_repos",
+    "github_create_branch",
+    "github_commit_file",
+    "github_open_pull_request",
+    "github_check_ci",
 ]

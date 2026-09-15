@@ -65,6 +65,14 @@ e *testada em produção* no próprio projeto.
   zero dependências novas). Sem chave de nuvem configurada, a API **degrada
   graciosamente** para o modelo local em vez de quebrar.
 
+## 🤖 Produto que vira colaborador (com cinto de segurança)
+
+O agente deployado pode contribuir código de verdade no próprio repositório —
+criar branch, commitar com Conventional Commits, abrir PR e perseguir o CI
+até ficar verde — mas **só depois de ativação explícita do dono**, com regras
+duríssimas embutidas nas tools (nunca main, nunca sem flag, nunca sem token).
+É o mesmo fluxo humano, LLM-acelerado: **o CI vira seu sandbox de testes**.
+
 ## 🌍 Portabilidade real: qualquer Linux (e Docker)
 
 - Projeto nasceu no FydeOS e migrou para o CachyOS sem atrito: comandos do PC
