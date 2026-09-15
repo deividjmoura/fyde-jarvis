@@ -51,6 +51,14 @@ e *testada em produção* no próprio projeto.
 - Detector com debounce/cooldown, compatível com 3 versões da API da lib
   (0.4/0.5/0.6), validado sem falsos positivos em ruído e silêncio.
 
+## 🖥️ Autonomia com consentimento: comandos de PC
+
+- O assistente executa ações locais (abrir apps/URLs, volume, screenshot)
+  reconhecidas por **regras explícitas (regex)** — nunca texto livre do LLM —
+  e só age após **confirmação verbal afirmativa**; ambiguidade = cancela.
+- Montagem de comandos separada da execução (testável sem tocar no PC);
+  42 testes cobrem parser, confirmação e degradação quando a ferramenta falta.
+
 ## 🔌 Resiliência: modo offline com fallback automático
 
 - `LLM_PROVIDER=ollama` roda **100% local** (Ollama via API OpenAI-compatível,
