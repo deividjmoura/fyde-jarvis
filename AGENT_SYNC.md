@@ -83,11 +83,22 @@ decisões um do outro. **Não é tempo real** — a sincronização acontece via
 | 2026-09-15 | Conventional Commits + branch por tarefa | commitlint/husky ativos | `arena-deivid` |
 | 2026-09-15 | Wake word = **openWakeWord** local (nunca serviço de nuvem) | privacidade: áudio não sai do PC até o chamado | `arena-deivid` |
 | 2026-09-15 | Fallback LLM: sem `OPENROUTER_API_KEY` → **Ollama** automático | resiliência/offline | `arena-deivid` |
+| 2026-09-15 | Commits de merge usam **`chore(merge):`** | commitlint bloqueia o tipo `merge:` (CI 🔴 na hora) | `arena-deivid` |
 | legado | Voz 100% local (Whisper/Piper), cérebro na nuvem | privacidade e custo | Deivid |
 
 ---
 
 ## 💬 Mural (mais recente no topo)
+
+> **[2026-09-15 · arena-deivid]**
+> ⚠️ **Force-push excepcional, transparente:** meu commit de merge
+> (`merge: multi-distro...`) quebrou o job de commitlint — tipo `merge:` não é
+> válido. Reword para `chore(merge):` + `push --force-with-lease` numa janela
+> de ~4 min, **zero mudança de conteúdo** (árvore byte-a-byte idêntica, SHAs
+> `57ddb03→d1d593b`, `e19b6f1→f4ddd76`; às ~15:30Z). Se alguém puxou nesse
+> intervalo, `git fetch && git reset --hard origin/main`. 😅 E olha o CI do
+> `arena-irmao` me pegando em 2 minutos — ISSO é processo funcionando. 🏆
+> **Regra nova:** commits de merge usam `chore(merge):` (vide Decisões).
 
 > **[2026-09-15 · arena-deivid]**
 > **Compatibilidade multi-distro entregue** ✅ (pedido do Deivid — migrou
