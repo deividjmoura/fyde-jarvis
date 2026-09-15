@@ -1,12 +1,20 @@
-import ast
-import operator
-from datetime import datetime
+"""Agente ReAct do Fyde Jarvis.
 
-from langgraph.prebuilt import create_react_agent
+⚠️  CONTRATO PÚBLICO DESTE MÓDULO (importado por outros módulos do repo):
+    - `SYSTEM_PROMPT`
+    - `tools`
+    - `run_first_agent`
+As tools em si moram em `app/services/agents/tools/`; aqui elas são apenas
+reexportadas. Se você precisar renomear qualquer coisa acima, avise antes no
+AGENT_SYNC.md — há código do outro time fazendo
+`from app.services.agents.first_agent import SYSTEM_PROMPT, tools`.
+"""
+
 from langchain_core.messages import HumanMessage, SystemMessage
-from langchain_core.tools import tool
+from langgraph.prebuilt import create_react_agent
 
 from app.core.checkpointer import get_checkpointer
+from app.services.agents.tools import ALL_TOOLS
 from app.services.llm.provider import get_llm
 
 # ====================== SYSTEM PROMPT ======================
@@ -14,59 +22,19 @@ SYSTEM_PROMPT = SystemMessage(content="""Você é o **Fyde Jarvis**, um assisten
 
 - Responda sempre em português brasileiro, de forma natural e direta.
 - Use humor leve quando fizer sentido.
-- Mantenha a memória da conversa.""")
+- Mantenha a memória da conversa.
 
-# ====================== CALCULADORA SEGURA (sem eval) ======================
-# Avalia a expressão com AST: apenas literais numéricos e operadores
-# matemáticos básicos são permitidos — nada de código arbitrário.
-_ALLOWED_OPS = {
-    ast.Add: operator.add,
-    ast.Sub: operator.sub,
-    ast.Mult: operator.mul,
-    ast.Div: operator.truediv,
-    ast.FloorDiv: operator.floordiv,
-    ast.Mod: operator.mod,
-    ast.Pow: operator.pow,
-    ast.UAdd: operator.pos,
-    ast.USub: operator.neg,
-}
+Você tem tools à disposição — use-as em vez de inventar:
+- `get_current_time` para data e hora;
+- `simple_calculator` para contas;
+- `get_weather` para clima e previsão de uma cidade;
+- `web_search` para fatos, pessoas, lugares e coisas que podem ter mudado.
 
-
-def _eval_node(node):
-    if isinstance(node, ast.Expression):
-        return _eval_node(node.body)
-    if isinstance(node, ast.Constant) and isinstance(node.value, (int, float)):
-        return node.value
-    if isinstance(node, ast.BinOp) and type(node.op) in _ALLOWED_OPS:
-        return _ALLOWED_OPS[type(node.op)](
-            _eval_node(node.left), _eval_node(node.right)
-        )
-    if isinstance(node, ast.UnaryOp) and type(node.op) in _ALLOWED_OPS:
-        return _ALLOWED_OPS[type(node.op)](_eval_node(node.operand))
-    raise ValueError("Expressão não suportada")
-
+Se uma tool falhar, diga o que aconteceu com naturalidade em vez de fingir que sabe.""")
 
 # ====================== TOOLS ======================
-@tool
-def get_current_time() -> str:
-    """Retorna a data e hora atual no formato brasileiro."""
-    return datetime.now().strftime("%d/%m/%Y • %H:%M:%S")
-
-
-@tool
-def simple_calculator(expression: str) -> str:
-    """Faz cálculos matemáticos simples (+, -, *, /, //, %, ** e parênteses)."""
-    try:
-        tree = ast.parse(expression, mode="eval")
-        result = _eval_node(tree)
-        return f"O resultado é {result}"
-    except ZeroDivisionError:
-        return "Divisão por zero não rolou — nem com tecnologia Stark."
-    except Exception:
-        return "Não consegui calcular essa expressão."
-
-
-tools = [get_current_time, simple_calculator]
+# Reexportadas do pacote `tools/`. Mantenha o nome `tools`: é contrato público.
+tools = ALL_TOOLS
 
 
 # ====================== RUN AGENT ======================
