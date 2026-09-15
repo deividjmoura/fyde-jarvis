@@ -1,0 +1,97 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  api-tests:
+    name: API · testes (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/api
+    strategy:
+      fail-fast: false
+      matrix:
+        # 3.13 é a versão validada localmente; 3.11 é o mínimo do README.
+        python-version: ["3.11", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: apps/api/requirements.txt
+
+      - name: Instalar dependências
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # Os testes unitários não tocam rede, Postgres, Firebase nem OpenRouter:
+      # conftest.py define as variáveis obrigatórias com valores falsos.
+      - name: Testes unitários
+        run: python -m pytest -q
+
+      # Testes de integração batem na Open-Meteo (API pública, sem chave).
+      - name: Testes de integração (Open-Meteo)
+        run: python -m pytest -m integration -q
+
+  commitlint:
+    name: Conventional Commits
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Validar mensagens de commit
+        run: npx commitlint --from ${{ github.event.pull_request.base.sha || github.event.before }} --to ${{ github.sha }} --verbose
+
+  web-build:
+    name: Web · build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/web
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+
+      - run: npm ci
+
+      # Sem as VITE_ env vars o build ainda compila (as variáveis só são lidas
+      # em runtime); aqui o objetivo é pegar import quebrado e erro de sintaxe.
+      - run: npm run build
+
+# ─────────────────────────────────────────────────────────────────────────────
+# COMO ATIVAR (1 comando, por quem tiver permissão `Workflows: Read and write`):
+#
+#     git mv docs/ci.yml.proposed .github/workflows/ci.yml
+#     git commit -m "ci: enable api tests, commitlint and web build"
+#
+# Este arquivo vive em docs/ porque tokens fine-grained só com `Contents` não
+# conseguem criar/editar nada em .github/workflows/ — o GitHub recusa o push com
+# "refusing to allow a Personal Access Token to create or update workflow".
+# Os três jobs foram validados localmente (pytest 52+2, commitlint, vite build).
+# ─────────────────────────────────────────────────────────────────────────────
