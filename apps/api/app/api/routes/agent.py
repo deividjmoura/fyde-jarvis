@@ -66,6 +66,44 @@ async def chat_with_agent_test(request: AgentRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+# ==================== CHAT STREAMING AUTENTICADO (SSE) ====================
+@router.post("/chat-stream")
+async def chat_with_agent_stream(
+    request: AgentRequest,
+    current_user: User = Depends(get_current_user),
+):
+    """Versão SSE do `/agent/chat` (Firebase auth): resposta em tempo real.
+
+    Diferencia do `/agent/chat-test-stream` em dois pontos:
+      - exige Firebase ID Token (Bearer);
+      - o `thread_id` é isolado por usuário (`user_<firebase_uid>`), igual ao
+        `/agent/chat`, então a memória nunca se mistura entre usuários.
+
+    Contrato de eventos é o mesmo do endpoint de teste (um por linha `data: `):
+      {"type": "token", "content": "..."}
+      {"type": "done"}
+      {"type": "error", "detail": "..."}
+    """
+
+    async def event_stream():
+        thread_id = f"user_{current_user.firebase_uid}"
+        try:
+            async for token in astream_agent_tokens(request.query, thread_id):
+                yield sse_pack({"type": "token", "content": token})
+            yield sse_pack({"type": "done"})
+        except Exception as e:
+            yield sse_pack({"type": "error", "detail": str(e)})
+
+    return StreamingResponse(
+        event_stream(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "X-Accel-Buffering": "no",  # desativa buffer em proxies (nginx)
+        },
+    )
+
+
 # ==================== CHAT TESTE STREAMING (SSE) ====================
 @router.post("/chat-test-stream")
 async def chat_with_agent_test_stream(request: AgentRequest):
