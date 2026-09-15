@@ -82,6 +82,7 @@ LLM_MODEL=anthropic/claude-3-haiku
 | Método | Rota | Auth | Uso |
 |--------|------|------|-----|
 | `POST` | `/agent/chat-test` | Não | Ideal para o cliente de voz e testes |
+| `POST` | `/agent/chat-test-stream` | Não | Igual ao chat-test, mas responde em **SSE** (tempo real) |
 | `POST` | `/agent/chat` | Sim (Firebase) | Chat autenticado |
 | `GET`  | `/agent/history` | Sim | Histórico da conversa |
 | `GET`  | `/auth/me` | Sim | Dados do usuário logado |
@@ -166,7 +167,7 @@ npm run dev
 - [ ] Mais tools no LangGraph (busca web, clima, etc.)
 - [ ] Cliente local executa comandos do sistema com confirmação verbal
 - [ ] Modo 100% local (Ollama) quando a API estiver offline
-- [ ] Streaming de resposta
+- [x] Streaming de resposta (SSE — `POST /agent/chat-test-stream` + TTS por frases no voice-client)
 - [ ] Wake word (“Jarvis”)
 
 ### Depois

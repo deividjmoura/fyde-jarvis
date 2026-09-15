@@ -49,6 +49,7 @@ O Fyde Jarvis é um assistente IA **híbrido**:
 | `app/core/checkpointer.py` | Pool async Postgres + `AsyncPostgresSaver` (memória) |
 | `app/services/llm/provider.py` | Fábrica de LLM (hoje: OpenRouter) |
 | `app/services/agents/first_agent.py` | Agente ReAct + tools + system prompt |
+| `app/services/agents/streaming.py` | Gerador async de tokens p/ SSE (`stream_mode="messages"`) |
 | `app/api/routes/` | `agent`, `auth`, `health` |
 | `app/dependencies/auth.py` | Valida Firebase ID Token |
 
