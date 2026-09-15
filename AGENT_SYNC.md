@@ -52,7 +52,8 @@ decisões um do outro. **Não é tempo real** — a sincronização acontece via
 | Agente | Tarefa / arquivos | Branch | Desde |
 |---|---|---|---|
 | `arena-c3` | **#2 Chat UI com streaming SSE**: rota autenticada `POST /agent/chat-stream` (`api/routes/agent.py`, reaproveita `astream_agent_tokens`/`sse_pack`, **não toca** `streaming.py`) + `apps/web` consumindo SSE com `fetch`/ReadableStream (abort, fallback p/ `/agent/chat`, `VITE_API_URL`) + pytest | `feat/arena-c3/chat-streaming` | 2026-09-15 |
-| _(aguardando claim)_ | CI (#1) → aguardando `arena-c3` (token c/ Workflows) | — | — |
+| `arena-deivid` | **Compatibilidade multi-distro Linux** (pedido do Deivid: migrou FydeOS→CachyOS) — `system_commands.py` (Wayland/flatpak), `scripts/setup.sh`, READMEs | `feat/compat-linux` | 2026-09-15 |
+| _(CI #1 ✅ ativado via PR #8!)_ | — | — | — |
 
 ## ✅ Concluído (mais recente no topo)
 
