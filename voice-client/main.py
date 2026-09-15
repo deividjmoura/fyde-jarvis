@@ -16,6 +16,7 @@ from audio import record_until_silence
 from stt import SpeechToText
 from tts import TextToSpeech
 from api_client import JarvisAPI
+from system_commands import parse_command, is_confirmation
 import config
 
 EXIT_WORDS = ("sair", "tchau", "encerrar", "desligar")
@@ -24,6 +25,41 @@ EXIT_WORDS = ("sair", "tchau", "encerrar", "desligar")
 def signal_handler(sig, frame):
     print("\n\nEncerrando. Até logo!")
     sys.exit(0)
+
+
+def speak_and_listen(stt, tts, prompt: str) -> str:
+    """Fala um prompt e devolve a transcrição da resposta (curta)."""
+    tts.speak(prompt)
+    audio = record_until_silence()
+    if len(audio) < config.SAMPLE_RATE * 0.3:
+        return ""
+    return stt.transcribe(audio) or ""
+
+
+def handle_local_command(text: str, stt, tts) -> bool:
+    """Se a frase for um comando de PC, confirma verbalmente e executa.
+
+    Retorna True se a frase foi tratada localmente (cérebro não é chamado).
+    """
+    parsed = parse_command(text)
+    if not parsed:
+        return False
+
+    description, action = parsed
+    answer = speak_and_listen(stt, tts, f"{description}. Posso executar?")
+    print(f"Confirmação: {answer or '(nada entendido)'}")
+
+    if is_confirmation(answer):
+        try:
+            result = action()
+        except Exception as e:
+            result = f"Deu erro ao executar: {e}"
+        print(result)
+        tts.speak(result)
+    else:
+        tts.speak("Tudo bem, não fiz nada.")
+
+    return True
 
 
 def process_utterance(stt, tts, brain) -> bool:
@@ -50,6 +86,10 @@ def process_utterance(stt, tts, brain) -> bool:
     if text.lower().strip() in EXIT_WORDS:
         tts.speak("Até logo!")
         return False
+
+    # Comandos locais do PC (abrir app/site, volume, print) com confirmação
+    if handle_local_command(text, stt, tts):
+        return True
 
     print("[API] Consultando o cérebro (streaming)...")
     try:

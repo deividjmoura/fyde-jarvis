@@ -58,3 +58,19 @@ WAKE_WORD_COOLDOWN=2.0    # segundos entre detecções
 ```
 
 Diga **"sair"** ou pressione `Ctrl+C` para encerrar.
+
+## 🖥️ Comandos de PC (com confirmação verbal)
+
+Além de conversar com o cérebro, o Jarvis executa ações locais — **sempre
+pedindo confirmação antes** ("Posso executar?" → só roda com "sim/pode/bora..."):
+
+| Você fala | Ele faz |
+|---|---|
+| "abre o google.com" / "abrir site github.com" | Abre a URL no navegador |
+| "abre o chrome / firefox / vscode / spotify / terminal" | Lança o app |
+| "aumenta o volume" / "diminui o volume" / "muta" | Ajusta o áudio (pactl/amixer) |
+| "tira um print" | Screenshot em `~/Pictures` |
+
+Frases que não casam seguem normalmente para o cérebro. Padrão seguro:
+**resposta ambígua = cancela**. Apps e executáveis em
+`system_commands.KNOWN_APPS`; testes em `tests/` (42 casos).
