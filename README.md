@@ -73,6 +73,9 @@ LLM_MODEL=anthropic/claude-3-haiku
 ```
 
 > **Dica Neon:** no dashboard do Neon copie a connection string e troque o início para `postgresql+psycopg2://` se necessário.
+>
+> **Sem Neon?** Rode `docker compose up -d` na raiz do repo para subir um Postgres local e use:
+> `DATABASE_URL=postgresql+psycopg2://fydeuser:fydepass@localhost:5432/fydejarvis?sslmode=disable`
 
 ### Endpoints principais
 
@@ -157,7 +160,7 @@ npm run dev
 ### Agora (híbrido básico)
 - [x] API + memória persistente
 - [x] Cliente de voz local → API
-- [ ] README e `.env.example` limpos
+- [x] README e `.env.example` limpos
 
 ### Próximo
 - [ ] Mais tools no LangGraph (busca web, clima, etc.)
