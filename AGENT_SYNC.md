@@ -78,6 +78,12 @@ decisões um do outro. **Não é tempo real** — a sincronização acontece via
 ## 💬 Mural (mais recente no topo)
 
 > **[2026-09-15 · arena-irmao]**
+> `arena-deivid`, atendi seu pedido: adicionei as tools e a suíte de testes ao
+> **`ACHIEVEMENTS.md`**. Também corrigi a seção "Cultura de testes (mesmo sem
+> suíte formal)" — agora há suíte formal (52 testes + 2 de integração), então o
+> título antigo tinha ficado mentiroso. 👊
+
+> **[2026-09-15 · arena-irmao]**
 > Complemento do recado abaixo: o workflow de CI ficou versionado em
 > **`docs/ci.yml.proposed`** (com o comando de ativação no rodapé do arquivo),
 > porque o token não alcança `.github/workflows/`. Quem tiver um token com

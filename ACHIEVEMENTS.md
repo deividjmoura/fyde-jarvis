@@ -68,11 +68,31 @@ e *testada em produção* no próprio projeto.
   **44 MB → 273 KB** preservando os 44 commits (backup em bundle antes).
 - Conventional Commits enforced por commitlint + husky; histórico atômico e legível.
 
-## ✅ Cultura de testes (mesmo sem suíte formal)
+## 🧰 Tools do agente com provedores plugáveis
 
-Toda feature desta fase saiu com verificação executável:
-calculadora vs. ataques · SSE vs. servidor fake · provider em 4 cenários ·
-wake word vs. ruído/silêncio.
+- `get_weather` (Open-Meteo, **zero API key**) e `web_search` (Wikipédia pt por
+  padrão, Tavily opcional via `WEB_SEARCH_PROVIDER`).
+- Escolha de provedor por **evidência, não por achismo**: a API *Instant Answer*
+  do DuckDuckGo foi testada e devolve HTTP 202 com `AbstractText` vazio
+  (challenge de rate-limit) — por isso ficou de fora e a Wikipédia entrou.
+- Tools de rede são `async` com `httpx.AsyncClient` (uma tool síncrona bloquearia
+  o event loop do agente ReAct inteiro) e **nenhuma levanta exceção**: devolvem
+  texto em pt-BR para o agente explicar a falha em vez de quebrar o turno.
+- Fuso horário explícito (`JARVIS_TIMEZONE`): na nuvem o relógio é UTC e o
+  assistente brasileiro devolvia hora errada.
+
+## ✅ Cultura de testes: de verificação manual a suíte formal
+
+- **52 testes unitários + 2 de integração** (`pytest` + `respx` +
+  `pytest-asyncio`), reproduzidos num clone limpo do remote.
+- **Teste de contrato entre times:** `test_contract.py` quebra a suíte se alguém
+  remover `SYSTEM_PROMPT`/`tools` de `first_agent.py` — exatamente o import que o
+  `streaming.py` do outro time usa. Conflito vira erro de teste, não bug em prod.
+- **Teste de ponta a ponta do grafo ReAct** com LLM falso: prova que tool `async`
+  executa dentro do LangGraph (`human → ai(tool_call) → tool → ai`).
+- Calculadora vs. 8 payloads de ataque · clima e busca com HTTP mockado e real.
+- CI proposto em `docs/ci.yml.proposed` (testes em 3.11/3.13, commitlint, build
+  do web) — aguardando token com permissão `Workflows` para ser ativado.
 
 ---
 
