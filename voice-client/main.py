@@ -63,11 +63,28 @@ def main():
                 tts.speak("Até logo!")
                 break
 
-            print("[API] Consultando o cérebro...")
-            response = brain.chat(text)
-            print(f"Jarvis: {response}")
+            print("[API] Consultando o cérebro (streaming)...")
+            try:
+                full_response = ""
+                for sentence in brain.chat_stream(text):
+                    print(f"Jarvis: {sentence}")
+                    tts.speak(sentence)
+                    full_response += (
+                        " " if full_response else ""
+                    ) + sentence
 
-            tts.speak(response)
+                if not full_response:
+                    response = brain.chat(text)
+                    print(f"Jarvis: {response}")
+                    tts.speak(response)
+
+            except Exception as stream_err:
+                # API sem endpoint de streaming (ou falha na conexão):
+                # volta para o modo clássico de uma resposta só.
+                print(f"[API] Streaming indisponível ({stream_err}). Modo clássico.")
+                response = brain.chat(text)
+                print(f"Jarvis: {response}")
+                tts.speak(response)
 
         except KeyboardInterrupt:
             break
