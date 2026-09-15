@@ -9,14 +9,28 @@ Cliente de voz local que usa o **cérebro** (API do fyde-jarvis).
    → Piper fala a resposta frase a frase, em tempo real
 ```
 
-## Instalação rápida (CachyOS / Arch)
+## Instalação — qualquer distro
+
+### Opção 1: script automático (recomendado)
 
 ```bash
-sudo pacman -S --needed portaudio python-pip python-virtualenv
-paru -S piper-tts   # ou instale o binário manualmente
+bash scripts/setup.sh   # a partir da raiz do repo; detecta sua distro
+```
 
-python -m venv .venv
-source .venv/bin/activate
+### Opção 2: manual por gerenciador de pacotes
+
+| Distro | Dependências de sistema |
+|---|---|
+| **CachyOS / Arch** | `sudo pacman -S --needed portaudio python python-pip wget curl` |
+| **Debian / Ubuntu** | `sudo apt install portaudio19-dev python3-venv python3-pip wget curl` |
+| **Fedora** | `sudo dnf install portaudio-devel python3 python3-pip wget curl` |
+| **openSUSE** | `sudo zypper install portaudio-devel python3 python3-pip wget curl` |
+
+Depois, em qualquer uma delas:
+
+```bash
+cd voice-client
+python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt   # inclui openwakeword (modelos embutidos)
 
 # Voz pt_BR
@@ -28,6 +42,24 @@ cd ../..
 cp .env.example .env
 # JARVIS_API_URL=http://localhost:8000
 ```
+
+### Piper TTS (binário)
+
+- **Arch:** `paru -S piper-tts` · **outras:** o `setup.sh` baixa o release oficial
+  para `~/.local/bin` (x86_64/aarch64), ou baixe manual em
+  [github.com/rhasspy/piper/releases](https://github.com/rhasspy/piper/releases).
+
+### Notas de compatibilidade
+
+- **Wayland** (Hyprland, Sway, GNOME Wayland): screenshots usam `hyprshot`/`grim`
+  automaticamente antes das ferramentas X11.
+- **Apps via Flatpak**: se o binário nativo não existir, comandos como
+  "abre o spotify" tentam `flatpak run <id>` automaticamente.
+- **Áudio**: `pactl` (PipeWire/PulseAudio) com fallback `amixer` (ALSA).
+- **Alpine/musl**: não suportado oficialmente (onnxruntime/faster-whisper
+  exigem glibc) — use o container da API + uma distro glibc para voz.
+- **API em qualquer SO**: `docker compose --profile full up --build` sobe
+  Postgres + API sem instalar nada além do Docker.
 
 ## Rodar
 

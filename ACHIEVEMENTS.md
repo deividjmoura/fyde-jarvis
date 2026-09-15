@@ -65,6 +65,17 @@ e *testada em produção* no próprio projeto.
   zero dependências novas). Sem chave de nuvem configurada, a API **degrada
   graciosamente** para o modelo local em vez de quebrar.
 
+## 🌍 Portabilidade real: qualquer Linux (e Docker)
+
+- Projeto nasceu no FydeOS e migrou para o CachyOS sem atrito: comandos do PC
+  resolvem **Wayland primeiro** (hyprshot/grim) antes de X11, apps sem binário
+  nativo caem para **Flatpak**, e o áudio cobre PipeWire/PulseAudio/ALSA.
+- `scripts/setup.sh` universal detecta o gerenciador (pacman/apt/dnf/zypper),
+  instala o Piper por arquitetura (x86_64/arm64) e prepara voz + venv + `.env`.
+- **Dockerfile da API** + compose com profile `full`: stack inteira
+  (Postgres + FastAPI) sobe com um comando — o bônus é a Fase 7 do roadmap
+  começando a andar sozinha.
+
 ## 🧠 Memória persistente por usuário
 
 - Checkpointer LangGraph em Postgres (Neon) com pool async, `thread_id`

@@ -17,5 +17,24 @@ services:
       timeout: 3s
       retries: 10
 
+  # Stack completa (API + banco) com UM comando:
+  #   docker compose --profile full up --build
+  # Com o profile ativo, a API usa o postgres do compose; para usar o Neon,
+  # remova/comente a linha DATABASE_URL em `environment`.
+  api:
+    profiles: ["full"]
+    build: ./apps/api
+    container_name: fyde_api
+    restart: always
+    env_file:
+      - ./apps/api/.env
+    environment:
+      DATABASE_URL: postgresql+psycopg2://fydeuser:fydepass@postgres:5432/fydejarvis?sslmode=disable
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+
 volumes:
   postgres_data:

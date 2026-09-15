@@ -31,10 +31,11 @@ Você fala  →  Cliente local (Whisper)
 
 ## Pré-requisitos
 
-- Python 3.11+
-- Conta no [Neon](https://neon.tech) (Postgres gratuito)
-- Chave [OpenRouter](https://openrouter.ai) (ou depois trocamos por Groq/Ollama)
+- Linux (testado no **CachyOS**; qualquer distro glibc serve) + Python 3.11+
+- Conta no [Neon](https://neon.tech) (Postgres gratuito) **ou** Docker p/ banco local
+- Chave [OpenRouter](https://openrouter.ai) (ou `LLM_PROVIDER=ollama` p/ modo offline)
 - (Opcional) Projeto Firebase se quiser auth
+- Stack completa em 1 comando (só precisa de Docker): `docker compose --profile full up --build`
 
 ---
 

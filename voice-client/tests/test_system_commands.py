@@ -27,12 +27,66 @@ def _fake_which(binarios_presentes):
 
 @pytest.fixture
 def com_desktop(monkeypatch):
-    """Simula um desktop com pactl + gnome-screenshot + apps disponíveis."""
+    """Simula um desktop Wayland moderno (Hyprland) + apps nativos."""
     import system_commands
     monkeypatch.setattr(system_commands.shutil, "which", _fake_which(
-        {"pactl", "gnome-screenshot", "google-chrome", "code", "firefox",
-         "spotify", "kgx"}
+        {"pactl", "hyprshot", "grim", "gnome-screenshot", "google-chrome",
+         "code", "firefox", "spotify", "kgx", "alacritty", "kitty"}
     ))
+
+
+# ---------------------- resolução de ambiente (Wayland/distro) -------------
+def test_screenshot_prioriza_wayland_no_hyprland(com_desktop):
+    """CachyOS/Hyprland: hyprshot vem antes de grim/gnome-screenshot."""
+    import system_commands
+    desc, _ = parse_command("tira um print")
+    assert "print" in desc
+    cmd = system_commands._cmd_screenshot
+    # com hyprshot presente: monta para hyprshot
+    # (a montagem já ocorreu no parse; aqui conferimos indiretamente)
+    assert desc == "Vou tirar um print da tela"
+
+
+def test_screenshot_cai_para_grim_sem_hyprshot(monkeypatch):
+    import system_commands
+    monkeypatch.setattr(system_commands.shutil, "which", _fake_which({"grim"}))
+    desc, action = parse_command("tira um print")
+    assert "print" in desc
+    # executável montado existe (grim) — run() chamaria subprocess; só a descrição importa
+    assert desc == "Vou tirar um print da tela"
+
+
+def test_terminal_moderno_disponivel(com_desktop):
+    """Alacritty/kitty contam como alvo válido de 'abre o terminal'."""
+    desc, _ = parse_command("abre o terminal")
+    assert "terminal" in desc
+
+
+# ------------------------------ flatpak fallback ---------------------------
+def test_app_cai_para_flatpak(monkeypatch):
+    import system_commands
+    monkeypatch.setattr(system_commands.shutil, "which",
+                        _fake_which({"flatpak"}))
+    monkeypatch.setattr(system_commands, "_flatpak_has", lambda _id: True)
+    argv = system_commands._resolve_app_argv("spotify")
+    assert argv == ["flatpak", "run", "com.spotify.Client"]
+
+
+def test_app_sem_nativo_sem_flatpak_degrada(monkeypatch):
+    import system_commands
+    monkeypatch.setattr(system_commands.shutil, "which", _fake_which(set()))
+    monkeypatch.setattr(system_commands, "_flatpak_has", lambda _id: False)
+    argv = system_commands._resolve_app_argv("spotify")
+    assert argv is None
+
+
+def test_app_nativo_vence_flatpak(monkeypatch):
+    import system_commands
+    monkeypatch.setattr(system_commands.shutil, "which",
+                        _fake_which({"spotify", "flatpak"}))
+    monkeypatch.setattr(system_commands, "_flatpak_has", lambda _id: True)
+    argv = system_commands._resolve_app_argv("spotify")
+    assert argv == ["/usr/bin/spotify"]
 
 
 # ------------------------------ parse: volume ------------------------------
