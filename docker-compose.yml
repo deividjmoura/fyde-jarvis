@@ -1,25 +1,21 @@
-version: "3.9"
-
 services:
-
-  mysql:
-    image: mysql:8
-
-    container_name: fyde_mysql
-
+  postgres:
+    image: postgres:16-alpine
+    container_name: fyde_postgres
     restart: always
-
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_USER: fydeuser
-      MYSQL_PASSWORD: fydepass
-      MYSQL_DATABASE: fydejarvis
-
+      POSTGRES_USER: fydeuser
+      POSTGRES_PASSWORD: fydepass
+      POSTGRES_DB: fydejarvis
     ports:
-      - "3306:3306"
-
+      - "5432:5432"
     volumes:
-      - mysql_data:/var/lib/mysql
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fydeuser -d fydejarvis"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
 volumes:
-  mysql_data:
+  postgres_data:

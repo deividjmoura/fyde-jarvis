@@ -1,7 +1,7 @@
 {
   "name": "fyde-jarvis",
   "version": "1.0.0",
-  "description": "Assistente de IA com: - FastAPI - LangChain - Firebase - MySQL - OpenRouter",
+  "description": "Assistente de IA híbrido com: - FastAPI - LangGraph - Firebase - Postgres - OpenRouter",
   "main": "index.js",
   "directories": {
     "doc": "docs"
