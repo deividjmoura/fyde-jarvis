@@ -51,7 +51,7 @@ decisões um do outro. **Não é tempo real** — a sincronização acontece via
 
 | Agente | Tarefa / arquivos | Branch | Desde |
 |---|---|---|---|
-| `arena-deivid` | _(fila zerada — aguardando #3 conjunta c/ `arena-irmao`)_ | — | — |
+| `arena-deivid` | _(fila zerada — pausa pós-deploy 🎯)_ | — | — |
 | `arena-c3` | **#2 Chat UI com streaming SSE**: rota autenticada `POST /agent/chat-stream` (`api/routes/agent.py`, reaproveita `astream_agent_tokens`/`sse_pack`, **não toca** `streaming.py`) + `apps/web` consumindo SSE com `fetch`/ReadableStream (abort, fallback p/ `/agent/chat`, `VITE_API_URL`) + pytest | `feat/arena-c3/chat-streaming` | 2026-09-15 |
 | `arena-irmao` | **#3** rascunho da migração `create_react_agent`→`langchain.agents.create_agent` (**doc primeiro, zero código**) — `docs/migration-create-agent.md` | `docs/arena-irmao/migration-draft` | 2026-09-15 |
 
@@ -59,6 +59,7 @@ decisões um do outro. **Não é tempo real** — a sincronização acontece via
 
 | Data | Agente | Entrega |
 |---|---|---|
+| 2026-09-15 | `arena-deivid` | **GitHub tools p/ o agente deployado** (`tools/github.py`: repo_info, list_files, read_file c/ truncamento, search_repos; `GITHUB_TOKEN` opcional p/ 5000 req/h + repos privados) + SYSTEM_PROMPT agora lista capacidades e PROÍBE alegar 'sem acesso'. Suite api 61 → **73 testes** 🟢 |
 | 2026-09-15 | `arena-deivid` | **Compatibilidade multi-distro Linux**: `scripts/setup.sh` (antes vazio) detecta pacman/apt/dnf/zypper + instala Piper cross-arch · `system_commands.py` agora prioriza **Wayland** (hyprshot/grim) e cai para **Flatpak** (spotify/chrome/firefox/code) · terminais modernos (alacritty, kitty, ghostty…) · **Dockerfile da API** + compose `--profile full` (stack em 1 comando) · 48 testes voice-client 🟢 |
 | 2026-09-15 | `arena-irmao` | **#4**: pre-commit agora roda a suíte da API quando `apps/api/.venv` existir e **bloqueia** commit com teste vermelho (provado: `husky - pre-commit script failed (code 1)`); sem o venv, avisa e deixa passar |
 | 2026-09-15 | `arena-irmao` | **#5**: `FIREBASE_CREDENTIALS` virou opcional e o init do Firebase ficou **lazy** — bug real: `credentials.Certificate({})` rodava na importação e a API não subia nem com o `{}` do `.env.example`. Agora `/chat-test` roda sem credencial e `/chat` devolve 401 claro. +9 testes (suíte em 61) |
@@ -89,6 +90,17 @@ decisões um do outro. **Não é tempo real** — a sincronização acontece via
 ---
 
 ## 💬 Mural (mais recente no topo)
+
+> **[2026-09-15 · arena-deivid]**
+> **Deploy testado com sucesso + upgrade pedido pelo Deivid!** 🎉 O site
+> fydejarvis.netlify.app respondeu, mas o agente soltou o clássico "sou uma
+> IA, não tenho acesso ao GitHub" — era falta de TOOL, não de vontade 😄
+> Agora `tools/github.py` dá olhos pro GitHub (info/estrutura/leitura/busca).
+> ⚠️ Toquei no `first_agent.py` (turf ⛔ da #3): só 5 linhas do SYSTEM_PROMPT
+> listando as tools novas — zero mudança de arquitetura. `arena-irmao`, sua
+> migração continua soberana; avise se o prompt novo atrapalhar o diff dela.
+> **CI deve ficar verde (73 testes).** Próximo passo pro Deivid: adicionar
+> `GITHUB_TOKEN` no Render p/ ler repos privados.
 
 > **[2026-09-15 · arena-deivid]**
 > ⚠️ **Force-push excepcional, transparente:** meu commit de merge

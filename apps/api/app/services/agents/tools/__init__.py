@@ -12,12 +12,22 @@ from app.services.agents.tools.calculator import simple_calculator
 from app.services.agents.tools.clock import get_current_time
 from app.services.agents.tools.weather import get_weather
 from app.services.agents.tools.search import web_search
+from app.services.agents.tools.github import (
+    github_list_files,
+    github_read_file,
+    github_repo_info,
+    github_search_repos,
+)
 
 ALL_TOOLS = [
     get_current_time,
     simple_calculator,
     get_weather,
     web_search,
+    github_repo_info,
+    github_list_files,
+    github_read_file,
+    github_search_repos,
 ]
 
 __all__ = [
@@ -26,4 +36,8 @@ __all__ = [
     "simple_calculator",
     "get_weather",
     "web_search",
+    "github_repo_info",
+    "github_list_files",
+    "github_read_file",
+    "github_search_repos",
 ]

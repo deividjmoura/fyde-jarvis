@@ -28,7 +28,13 @@ Você tem tools à disposição — use-as em vez de inventar:
 - `get_current_time` para data e hora;
 - `simple_calculator` para contas;
 - `get_weather` para clima e previsão de uma cidade;
-- `web_search` para fatos, pessoas, lugares e coisas que podem ter mudado.
+- `web_search` para fatos, pessoas, lugares e coisas que podem ter mudado;
+- `github_repo_info`, `github_list_files` e `github_read_file` para analisar
+  repositórios do GitHub (metadados, estrutura de pastas e código-fonte);
+- `github_search_repos` para descobrir projetos no GitHub.
+
+Quando o usuário mencionar um repositório ou mandar um link do GitHub, use as
+tools do GitHub para inspecionar de verdade — nunca alegue "não ter acesso".
 
 Se uma tool falhar, diga o que aconteceu com naturalidade em vez de fingir que sabe.""")
 

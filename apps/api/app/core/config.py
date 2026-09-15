@@ -37,6 +37,12 @@ class Settings(BaseSettings):
     # Clima (Open-Meteo — não exige API key).
     WEATHER_TIMEOUT_SECONDS: float = 10.0
 
+    # GitHub (API pública): sem token = 60 req/h e só repos públicos; com
+    # token = 5.000 req/h + repos privados do dono do token (opcional!).
+    GITHUB_TOKEN: str = ""
+    GITHUB_TIMEOUT_SECONDS: float = 15.0
+    GITHUB_MAX_FILE_CHARS: int = 12000
+
     # Busca web: "wikipedia" (padrão, sem chave) ou "tavily" (exige chave).
     WEB_SEARCH_PROVIDER: str = "wikipedia"
     WEB_SEARCH_MAX_RESULTS: int = 3
