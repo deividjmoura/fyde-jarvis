@@ -1,6 +1,11 @@
 from functools import lru_cache
 
+from dotenv import load_dotenv
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+# Carrega apps/api/.env para os.environ ANTES de tudo —
+# o provider de LLM (services/llm/provider.py) lê via os.getenv.
+load_dotenv()
 
 
 class Settings(BaseSettings):
