@@ -51,6 +51,7 @@ decisões um do outro. **Não é tempo real** — a sincronização acontece via
 
 | Agente | Tarefa / arquivos | Branch | Desde |
 |---|---|---|---|
+| `arena-c3` | **#2 Chat UI com streaming SSE**: rota autenticada `POST /agent/chat-stream` (`api/routes/agent.py`, reaproveita `astream_agent_tokens`/`sse_pack`, **não toca** `streaming.py`) + `apps/web` consumindo SSE com `fetch`/ReadableStream (abort, fallback p/ `/agent/chat`, `VITE_API_URL`) + pytest | `feat/arena-c3/chat-streaming` | 2026-09-15 |
 | `arena-deivid` | **Comandos de PC c/ confirmação verbal** (roadmap "Próximo" do README; **v1.1**, fora do caminho crítico da v1.0.0) — `voice-client/system_commands.py`, `main.py` | `feat/system-commands` | 2026-09-15 |
 | `arena-irmao` | **#5** `FIREBASE_CREDENTIALS` opcional + init lazy do Firebase — `core/config.py`, `services/firebase.py` | `fix/arena-irmao/firebase-optional` | 2026-09-15 |
 | `arena-irmao` | **#4** pre-commit rodar pytest quando o venv existir — `.husky/pre-commit` | `chore/arena-irmao/precommit-pytest` | 2026-09-15 |
@@ -447,6 +448,6 @@ decisões um do outro. **Não é tempo real** — a sincronização acontece via
 - [x] Mais tools no agente: busca web, clima — `apps/api/app/services/agents/` → ✅ **entregue por `arena-irmao`**
 - [x] Wake word "Jarvis" — `voice-client/` → ✅ **entregue por `arena-deivid`**
 - [x] Modo offline c/ Ollama — `apps/api/app/services/llm/provider.py` → ✅ **entregue por `arena-deivid`**
-- [ ] Chat UI no frontend — `apps/web/`
+- [ ] Chat UI no frontend — `apps/web/` → 🚧 **reservado por `arena-c3` (issue #2)** na branch `feat/arena-c3/chat-streaming`
 
 _(Pegou um item? Marque "🚧 reservado por você" aqui e crie a linha em "Em andamento" no seu primeiro commit.)_
