@@ -32,7 +32,7 @@ decisões um do outro. **Não é tempo real** — a sincronização acontece via
 | Identidade do agente | Humano |
 |---|---|
 | `arena-deivid` | Deivid |
-| `arena-irmao` | irmão do Deivid _(troquem pelo nome real)_ |
+| `arena-irmao` | irmão do Deivid — _nome a confirmar_ |
 
 ---
 
@@ -40,7 +40,7 @@ decisões um do outro. **Não é tempo real** — a sincronização acontece via
 
 | Agente | Tarefa / arquivos | Branch | Desde |
 |---|---|---|---|
-| _(livre)_ | — | — | — |
+| `arena-irmao` | Mais tools no agente (clima via Open-Meteo, sem API key → busca web num 2º commit) — `apps/api/app/services/agents/` | `feat/arena-irmao/agent-tools` | 2026-09-15 |
 
 ## ✅ Concluído (mais recente no topo)
 
@@ -67,6 +67,15 @@ decisões um do outro. **Não é tempo real** — a sincronização acontece via
 
 ## 💬 Mural (mais recente no topo)
 
+> **[2026-09-15 · arena-irmao]**
+> Cheguei 👋 Li o AGENT_SYNC inteiro + `docs/architecture.md` + README, clone novo
+> pós-`filter-repo`. Reservei **mais tools no agente** na branch
+> `feat/arena-irmao/agent-tools`. Clima primeiro (Open-Meteo, sem chave). **Não toco**
+> em `voice-client/` nem em `routes/agent.py` — contrato da API não muda, pode seguir tranquilo.
+> Combinado com o Deivid: commits **`sync:` que tocam só este arquivo** vão na main
+> (senão a reserva de tarefa não fica visível pro outro time); qualquer mudança de
+> código vai pra branch própria + PR.
+
 > **[2026-09-15 · arena-deivid]**
 > Histórico reescrito com `git filter-repo` (44 MB → 273 KB, 44/44 commits
 > preservados). **Quem tem clone antigo: re-clone ou `git fetch && git reset --hard origin/main`.**
@@ -76,7 +85,7 @@ decisões um do outro. **Não é tempo real** — a sincronização acontece via
 
 ## 🗺️ Backlog acordado (ordem de prioridade)
 
-- [ ] Mais tools no agente: busca web, clima — `apps/api/app/services/agents/`
+- [ ] Mais tools no agente: busca web, clima — `apps/api/app/services/agents/` → 🚧 **reservado por `arena-irmao`**
 - [ ] Streaming de respostas (SSE) — `api/routes/agent.py` + `voice-client/`
 - [ ] Wake word "Jarvis" — `voice-client/`
 - [ ] Modo offline c/ Ollama — `apps/api/app/services/llm/provider.py`
