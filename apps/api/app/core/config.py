@@ -24,6 +24,25 @@ class Settings(BaseSettings):
     # Inclua aqui a URL do frontend em produção.
     ALLOWED_ORIGINS: str = "http://localhost:5173,http://localhost:3000"
 
+    # ---------- Tools do agente ----------
+    # Tudo abaixo é OPCIONAL (tem padrão) — não precisa mexer no seu .env.
+
+    # Fuso da tool de data/hora. A API roda em UTC na nuvem, então o padrão
+    # é o fuso do usuário e não o relógio do servidor.
+    JARVIS_TIMEZONE: str = "America/Sao_Paulo"
+
+    # Clima (Open-Meteo — não exige API key).
+    WEATHER_TIMEOUT_SECONDS: float = 10.0
+
+    # Busca web: "wikipedia" (padrão, sem chave) ou "tavily" (exige chave).
+    WEB_SEARCH_PROVIDER: str = "wikipedia"
+    WEB_SEARCH_MAX_RESULTS: int = 3
+    WEB_SEARCH_TIMEOUT_SECONDS: float = 10.0
+    TAVILY_API_KEY: str = ""
+
+    # User-Agent enviado a APIs públicas (a Wikipédia pede um identificável).
+    HTTP_USER_AGENT: str = "FydeJarvis/1.0 (https://github.com/deividjmoura/fyde-jarvis)"
+
     model_config = SettingsConfigDict(
         env_file=".env",
         extra="ignore"

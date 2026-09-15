@@ -48,10 +48,24 @@ O Fyde Jarvis é um assistente IA **híbrido**:
 | `app/core/config.py` | Settings via pydantic + `.env`; carrega dotenv 1× |
 | `app/core/checkpointer.py` | Pool async Postgres + `AsyncPostgresSaver` (memória) |
 | `app/services/llm/provider.py` | Fábrica de LLM (hoje: OpenRouter) |
-| `app/services/agents/first_agent.py` | Agente ReAct + tools + system prompt |
+| `app/services/agents/first_agent.py` | Agente ReAct + system prompt; reexporta `tools` |
+| `app/services/agents/tools/` | Uma tool por módulo (`clock`, `calculator`, `weather`, `search`) |
 | `app/services/agents/streaming.py` | Gerador async de tokens p/ SSE (`stream_mode="messages"`) |
 | `app/api/routes/` | `agent`, `auth`, `health` |
 | `app/dependencies/auth.py` | Valida Firebase ID Token |
+
+### Tools disponíveis
+
+| Tool | O que faz | Rede | Chave |
+|------|-----------|------|-------|
+| `get_current_time` | Data/hora no fuso `JARVIS_TIMEZONE` | não | — |
+| `simple_calculator` | Aritmética via AST (sem `eval`) | não | — |
+| `get_weather` | Clima atual + mín/máx do dia (Open-Meteo) | sim | não precisa |
+| `web_search` | Busca: Wikipédia pt (padrão) ou Tavily | sim | só no Tavily |
+
+Tools de rede são `async` com `httpx.AsyncClient` — uma tool síncrona bloquearia
+o event loop do agente inteiro durante a chamada. Nenhuma tool levanta exceção:
+todas devolvem uma string em pt-BR para que o agente explique o problema.
 
 **Fluxo de um chat:**
 
