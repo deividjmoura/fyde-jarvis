@@ -1,1 +1,11 @@
 npm test
+
+# Roda a suíte da API se o venv existir; senão, avisa e deixa passar.
+# Assim quem só mexe no frontend ou no voice-client não é bloqueado, e quem tem
+# o venv não consegue commitar com a suíte vermelha.
+if [ -x apps/api/.venv/bin/python ]; then
+  echo "pre-commit: rodando a suíte da API..."
+  (cd apps/api && .venv/bin/python -m pytest -q) || exit 1
+else
+  echo "pre-commit: apps/api/.venv ausente — pulando testes da API"
+fi
