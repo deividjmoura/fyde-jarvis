@@ -5,3 +5,4 @@ numpy>=1.26.0
 scipy>=1.11.0
 requests>=2.31.0
 python-dotenv>=1.0.0
+openwakeword>=0.6.0

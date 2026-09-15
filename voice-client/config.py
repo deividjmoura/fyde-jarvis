@@ -36,3 +36,9 @@ WHISPER_LANGUAGE = "pt"
 PIPER_MODEL = PIPER_DIR / "pt_BR-faber-medium.onnx"
 PIPER_CONFIG = PIPER_DIR / "pt_BR-faber-medium.onnx.json"
 PIPER_BINARY = "piper"
+
+# === Wake word (openWakeWord, modelo pré-treinado "hey_jarvis") ===
+WAKE_WORD_ENABLED = os.getenv("WAKE_WORD_ENABLED", "true").lower() == "true"
+WAKE_WORD_MODEL = os.getenv("WAKE_WORD_MODEL", "hey_jarvis")
+WAKE_WORD_THRESHOLD = float(os.getenv("WAKE_WORD_THRESHOLD", "0.5"))
+WAKE_WORD_COOLDOWN = float(os.getenv("WAKE_WORD_COOLDOWN", "2.0"))  # segundos
