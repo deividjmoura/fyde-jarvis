@@ -215,6 +215,14 @@ fyde-jarvis/
 
 ---
 
+## 🤝 Contribuindo (humanos + agentes de IA)
+
+Este repo é mantido por **duas pessoas com seus respectivos agentes de IA**.
+Antes de qualquer tarefa, leia e siga o [AGENT_SYNC.md](./AGENT_SYNC.md):
+é onde os times reservam tarefas, registram decisões e trocam recados.
+
+---
+
 Desenvolvido com ❤️ por Deivid Moura  
 Arquitetura híbrida evoluída com o Grok.
 
