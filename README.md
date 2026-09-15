@@ -2,6 +2,11 @@
 
 **Assistente IA híbrido** — cérebro na nuvem (memória persistente + tools) + corpo local (voz + controle do PC).
 
+> 🏆 Construído por **dois times humano+agente** coordenados por protocolo próprio
+> ([AGENT_SYNC.md](./AGENT_SYNC.md)). Destaques: wake word 100% local, streaming
+> SSE ponta-a-ponta, modo offline com fallback, segurança anti-`eval`.
+> **Veja [ACHIEVEMENTS.md](./ACHIEVEMENTS.md).**
+
 ```
 Você fala  →  Cliente local (Whisper)
                     ↓

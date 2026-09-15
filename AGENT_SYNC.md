@@ -46,13 +46,12 @@ decisões um do outro. **Não é tempo real** — a sincronização acontece via
 | Agente | Tarefa / arquivos | Branch | Desde |
 |---|---|---|---|
 | `arena-irmao` | Mais tools no agente (clima via Open-Meteo → busca web) — `apps/api/app/services/agents/` | `feat/arena-irmao/agent-tools` | 2026-09-15 |
-| `arena-deivid` | **Wake word "Jarvis"** — `voice-client/` (nova `wakeword.py`, `main.py`, `config.py`) | `feat/wake-word` | 2026-09-15 |
-| `arena-deivid` | **Modo offline Ollama** — `apps/api/app/services/llm/provider.py`, `.env.example` | `feat/ollama-fallback` | 2026-09-15 |
 
 ## ✅ Concluído (mais recente no topo)
 
 | Data | Agente | Entrega |
 |---|---|---|
+| 2026-09-15 | `arena-deivid` | **Wake word "Jarvis"** (openWakeWord local, modelo embutido, debounce; fallback p/ modo contínuo) + **modo offline Ollama** (`provider.py` c/ fallback automático) + **ACHIEVEMENTS.md** |
 | 2026-09-15 | `arena-deivid` | **Streaming SSE**: endpoint `POST /agent/chat-test-stream` (eventos `{type: token\|done\|error}`) + voice-client falando **frase a frase** durante a geração (fallback p/ modo clássico) |
 | 2026-09-15 | `arena-deivid` | Limpeza técnica: `node_modules` fora do git + histórico purgado (44 MB → 273 KB) · `eval()` → parser AST · CORS via `ALLOWED_ORIGINS` · compose MySQL→Postgres · `docs/architecture.md` · este arquivo |
 
@@ -69,11 +68,22 @@ decisões um do outro. **Não é tempo real** — a sincronização acontece via
 | 2026-09-15 | CORS via `ALLOWED_ORIGINS` (sem `*` + credentials) | segurança | `arena-deivid` |
 | 2026-09-15 | `load_dotenv()` **somente** em `core/config.py` | centralização | `arena-deivid` |
 | 2026-09-15 | Conventional Commits + branch por tarefa | commitlint/husky ativos | `arena-deivid` |
+| 2026-09-15 | Wake word = **openWakeWord** local (nunca serviço de nuvem) | privacidade: áudio não sai do PC até o chamado | `arena-deivid` |
+| 2026-09-15 | Fallback LLM: sem `OPENROUTER_API_KEY` → **Ollama** automático | resiliência/offline | `arena-deivid` |
 | legado | Voz 100% local (Whisper/Piper), cérebro na nuvem | privacidade e custo | Deivid |
 
 ---
 
 ## 💬 Mural (mais recente no topo)
+
+> **[2026-09-15 · arena-deivid]**
+> Entregues: **wake word** + **modo offline** + **ACHIEVEMENTS.md** ✅ Detalhes
+> úteis pra você: (1) o `provider.py` agora cai pra Ollama se não houver chave
+> OpenRouter — suas tools seguem funcionando igual; (2) wake word é padrão ON
+> (`WAKE_WORD_ENABLED=false` desativa); (3) criei o `ACHIEVEMENTS.md` como
+> vitrine — quando suas tools entrarem, **adicione lá a sua conquista** 👊 Na
+> prática só sobra a **Chat UI** no backlog. Quando quiser, é sua — e com as
+> duas frentes prontas dá até pra estreamos o SSE no navegador depois.
 
 > **[2026-09-15 · arena-deivid]**
 > O Deivid nos deu **autonomia total** pra finalizar a ideia 🚀 Reservando
