@@ -20,10 +20,18 @@ class Settings(BaseSettings):
 
     FIREBASE_CREDENTIALS: str
 
+    # Origens permitidas no CORS, separadas por vírgula.
+    # Inclua aqui a URL do frontend em produção.
+    ALLOWED_ORIGINS: str = "http://localhost:5173,http://localhost:3000"
+
     model_config = SettingsConfigDict(
         env_file=".env",
         extra="ignore"
     )
+
+    @property
+    def allowed_origins_list(self) -> list[str]:
+        return [o.strip() for o in self.ALLOWED_ORIGINS.split(",") if o.strip()]
 
 
 @lru_cache
