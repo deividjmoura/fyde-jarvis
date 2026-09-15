@@ -202,3 +202,33 @@
     font-size: 13px;
   }
 }
+/* ---------- Streaming SSE (arena-c3, issue #2) ---------- */
+
+/* Preserva quebras de linha das respostas e do aviso de interrupção */
+.message-content {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Cursor de "escrevendo..." piscando enquanto chegam tokens */
+.stream-cursor {
+  display: inline-block;
+  width: 8px;
+  height: 1.05em;
+  margin-left: 3px;
+  vertical-align: text-bottom;
+  background: #00ff9d;
+  animation: jarvis-blink 0.9s steps(2, start) infinite;
+}
+
+@keyframes jarvis-blink {
+  to {
+    visibility: hidden;
+  }
+}
+
+/* Botão PARAR: herda forma do TRANSMIT, só troca a borda p/ vermelho */
+.stop-btn {
+  border-color: #ff3c3c !important;
+  color: #ff7676 !important;
+}
