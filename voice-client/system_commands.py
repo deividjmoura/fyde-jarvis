@@ -17,14 +17,31 @@ from datetime import datetime
 from pathlib import Path
 
 # ---------------------------------------------------------------------------
-# Apps conhecidos: nome falado → executáveis possíveis (na ordem de busca)
+# Apps conhecidos: nome falado → executáveis nativos (ordem) + ID Flatpak.
+# Cobre X11 e Wayland; Arch, Debian, Fedora, openSUSE… Edite à vontade.
 # ---------------------------------------------------------------------------
 KNOWN_APPS = {
-    "chrome": ["google-chrome", "google-chrome-stable", "chromium", "chromium-browser"],
-    "firefox": ["firefox"],
-    "vscode": ["code"],
-    "spotify": ["spotify"],
-    "terminal": ["kgx", "gnome-terminal", "konsole", "xterm"],
+    "chrome": {
+        "bins": ["google-chrome", "google-chrome-stable", "chromium", "chromium-browser"],
+        "flatpak": "com.google.Chrome",
+    },
+    "firefox": {
+        "bins": ["firefox"],
+        "flatpak": "org.mozilla.firefox",
+    },
+    "vscode": {
+        "bins": ["code", "codium"],
+        "flatpak": "com.visualstudio.code",
+    },
+    "spotify": {
+        "bins": ["spotify"],
+        "flatpak": "com.spotify.Client",
+    },
+    "terminal": {
+        "bins": ["kgx", "gnome-console", "gnome-terminal", "konsole",
+                 "alacritty", "kitty", "foot", "wezterm", "ghostty", "tilix", "xterm"],
+        "flatpak": None,
+    },
 }
 
 AFFIRMATIVE = ("sim", "confirma", "pode", "isso", "bora", "manda", "claro",
@@ -50,6 +67,34 @@ def _which(candidates):
     return None
 
 
+def _flatpak_has(app_id: str) -> bool:
+    """True se o app flatpak está instalado (checagem rápida e silenciosa)."""
+    try:
+        r = subprocess.run(["flatpak", "info", app_id],
+                           capture_output=True, timeout=4)
+        return r.returncode == 0
+    except Exception:
+        return False
+
+
+def _resolve_app_argv(app_key: str):
+    """Devolve o argv pronto para lançar o app, ou None se não achou.
+
+    Prioridade: binário nativo → Flatpak (se o `flatpak` existir e o ID
+    estiver instalado).
+    """
+    entry = KNOWN_APPS[app_key]
+    native = _which(entry["bins"])
+    if native:
+        return [native]
+
+    flatpak_id = entry.get("flatpak")
+    if flatpak_id and shutil.which("flatpak") and _flatpak_has(flatpak_id):
+        return ["flatpak", "run", flatpak_id]
+
+    return None
+
+
 # ---------------------------------------------------------------------------
 # Montadores de comando (puros — não executam nada)
 # ---------------------------------------------------------------------------
@@ -63,13 +108,13 @@ def _cmd_open_url(url: str):
 
 
 def _cmd_open_app(app_key: str):
-    binary = _which(KNOWN_APPS[app_key])
-    if not binary:
+    argv = _resolve_app_argv(app_key)
+    if not argv:
         desc = f"Queria abrir o {app_key}, mas não encontrei ele instalado"
-        return desc, lambda: f"{app_key} não está instalado (ou fora do PATH)."
+        return desc, lambda: f"{app_key} não está instalado (nativo nem flatpak)."
 
     def run():
-        subprocess.Popen([binary], stdout=subprocess.DEVNULL,
+        subprocess.Popen(argv, stdout=subprocess.DEVNULL,
                          stderr=subprocess.DEVNULL)
         return f"{app_key} aberto."
 
@@ -105,17 +150,23 @@ def _cmd_screenshot():
     target_dir = pictures if pictures.is_dir() else Path.home()
     target = target_dir / f"screenshot-{datetime.now():%Y%m%d-%H%M%S}.png"
 
+    # Wayland (Hyprland, wlroots) primeiro; depois GNOME/KDE; X11 genérico no fim
     candidates = [
-        (["gnome-screenshot", "-f", str(target)], "gnome-screenshot"),
-        (["spectacle", "-b", "-n", "-o", str(target)], "spectacle"),
-        (["scrot", str(target)], "scrot"),
+        ["hyprshot", "-m", "output", "-o", str(target_dir), "-f", target.name],
+        ["grim", str(target)],
+        ["gnome-screenshot", "-f", str(target)],
+        ["spectacle", "-b", "-n", "-o", str(target)],
+        ["maim", str(target)],
+        ["scrot", str(target)],
+        ["import", "-window", "root", str(target)],  # ImageMagick
     ]
-    for cmd, _bin in candidates:
+    for cmd in candidates:
         if shutil.which(cmd[0]):
             break
     else:
         return ("Queria tirar um print, mas não achei ferramenta de captura",
-                lambda: "Sem gnome-screenshot, spectacle ou scrot instalados.")
+                lambda: "Sem hyprshot, grim, gnome-screenshot, spectacle, "
+                        "maim, scrot ou import instalados.")
 
     def run():
         subprocess.run(cmd, capture_output=True, timeout=15, check=True)

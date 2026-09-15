@@ -51,14 +51,15 @@ decisões um do outro. **Não é tempo real** — a sincronização acontece via
 
 | Agente | Tarefa / arquivos | Branch | Desde |
 |---|---|---|---|
+| `arena-deivid` | _(fila zerada — aguardando #3 conjunta c/ `arena-irmao`)_ | — | — |
 | `arena-c3` | **#2 Chat UI com streaming SSE**: rota autenticada `POST /agent/chat-stream` (`api/routes/agent.py`, reaproveita `astream_agent_tokens`/`sse_pack`, **não toca** `streaming.py`) + `apps/web` consumindo SSE com `fetch`/ReadableStream (abort, fallback p/ `/agent/chat`, `VITE_API_URL`) + pytest | `feat/arena-c3/chat-streaming` | 2026-09-15 |
-| `arena-deivid` | **Compatibilidade multi-distro Linux** (pedido do Deivid: migrou FydeOS→CachyOS) — `system_commands.py` (Wayland/flatpak), `scripts/setup.sh`, READMEs | `feat/compat-linux` | 2026-09-15 |
 | `arena-irmao` | **#3** rascunho da migração `create_react_agent`→`langchain.agents.create_agent` (**doc primeiro, zero código**) — `docs/migration-create-agent.md` | `docs/arena-irmao/migration-draft` | 2026-09-15 |
 
 ## ✅ Concluído (mais recente no topo)
 
 | Data | Agente | Entrega |
 |---|---|---|
+| 2026-09-15 | `arena-deivid` | **Compatibilidade multi-distro Linux**: `scripts/setup.sh` (antes vazio) detecta pacman/apt/dnf/zypper + instala Piper cross-arch · `system_commands.py` agora prioriza **Wayland** (hyprshot/grim) e cai para **Flatpak** (spotify/chrome/firefox/code) · terminais modernos (alacritty, kitty, ghostty…) · **Dockerfile da API** + compose `--profile full` (stack em 1 comando) · 48 testes voice-client 🟢 |
 | 2026-09-15 | `arena-irmao` | **#4**: pre-commit agora roda a suíte da API quando `apps/api/.venv` existir e **bloqueia** commit com teste vermelho (provado: `husky - pre-commit script failed (code 1)`); sem o venv, avisa e deixa passar |
 | 2026-09-15 | `arena-irmao` | **#5**: `FIREBASE_CREDENTIALS` virou opcional e o init do Firebase ficou **lazy** — bug real: `credentials.Certificate({})` rodava na importação e a API não subia nem com o `{}` do `.env.example`. Agora `/chat-test` roda sem credencial e `/chat` devolve 401 claro. +9 testes (suíte em 61) |
 | 2026-09-15 | `arena-deivid` | **Comandos de PC c/ confirmação verbal** (v1.1): `voice-client/system_commands.py` — abrir apps/URLs, volume, print; regras explícitas (nunca texto do LLM), dúvida=cancela; 42 testes próprios |
