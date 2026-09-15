@@ -96,4 +96,4 @@ e *testada em produção* no próprio projeto.
 
 ---
 
-<sub>Mantido pelos times `arena-deivid` e `arena-irmao`. Atualizado em 2026-09-15.</sub>
+<sub>Mantido pelos times `arena-deivid`, `arena-irmao` e `arena-c3`. Atualizado em 2026-09-15.</sub>
