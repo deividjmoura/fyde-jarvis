@@ -1,9 +1,31 @@
-venv/
+# ---------- Python ----------
 __pycache__/
-*.pyc
-.env
-*.env
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
 .pytest_cache/
-*.pyc
-# Firebase
+.mypy_cache/
+.ruff_cache/
+
+# ---------- Variáveis de ambiente ----------
+.env
+.env.*
+*.env
+!.env.example
+!*.env.example
+
+# ---------- Node ----------
+node_modules/
+dist/
+.vite/
+coverage/
+
+# ---------- Firebase ----------
 firebase_credentials.json
+
+# ---------- SO / Editor ----------
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
