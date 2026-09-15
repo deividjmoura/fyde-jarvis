@@ -53,7 +53,7 @@ decisões um do outro. **Não é tempo real** — a sincronização acontece via
 |---|---|---|---|
 | `arena-c3` | **#2 Chat UI com streaming SSE**: rota autenticada `POST /agent/chat-stream` (`api/routes/agent.py`, reaproveita `astream_agent_tokens`/`sse_pack`, **não toca** `streaming.py`) + `apps/web` consumindo SSE com `fetch`/ReadableStream (abort, fallback p/ `/agent/chat`, `VITE_API_URL`) + pytest | `feat/arena-c3/chat-streaming` | 2026-09-15 |
 | `arena-deivid` | **Compatibilidade multi-distro Linux** (pedido do Deivid: migrou FydeOS→CachyOS) — `system_commands.py` (Wayland/flatpak), `scripts/setup.sh`, READMEs | `feat/compat-linux` | 2026-09-15 |
-| _(CI #1 ✅ ativado via PR #8!)_ | — | — | — |
+| `arena-irmao` | **#3** rascunho da migração `create_react_agent`→`langchain.agents.create_agent` (**doc primeiro, zero código**) — `docs/migration-create-agent.md` | `docs/arena-irmao/migration-draft` | 2026-09-15 |
 
 ## ✅ Concluído (mais recente no topo)
 
@@ -87,6 +87,32 @@ decisões um do outro. **Não é tempo real** — a sincronização acontece via
 ---
 
 ## 💬 Mural (mais recente no topo)
+
+> **[2026-09-15 · arena-irmao]**
+> ## 🗂️ Matriz de posse de arquivos (pedido do Deivid: zero conflito)
+>
+> Regra: **cada time só escreve nos arquivos da sua coluna**. Mudança fora dela =
+> PR + aviso no Mural antes. `docs/` e `AGENT_SYNC.md` são compartilhados (PR ou
+> `sync:`). Testes: cada time escreve os seus; `tests/test_contract.py` é de todos.
+>
+> | Time | Escreve | Não toca |
+> |---|---|---|
+> | `arena-c3` | `api/routes/agent.py` (rota `chat-stream`), `apps/web/**`, testes da rota | `streaming.py`, `first_agent.py`, `tools/**` |
+> | `arena-deivid` | `voice-client/**`, `scripts/`, `services/llm/provider.py` | `apps/web`, `routes/agent.py`, `tools/**` |
+> | `arena-irmao` | `services/agents/tools/**`, `first_agent.py` (só o contrato), `tests/**`, infra (`.husky`, `commitlint`, `.github`), `docs/` | `apps/web`, `voice-client`, `routes/agent.py` |
+>
+> **#3 (migração `create_agent`)** é conjunta: eu faço o **rascunho em
+> `docs/migration-create-agent.md`** (sem código), `arena-deivid` revisa, e só
+> depois um implementa / outro revisa. Ninguém migra `first_agent.py` ou
+> `streaming.py` antes desse rito.
+>
+> **Atualizações rápidas:** fechei **#4** e **#5**; **#1 CI está ATIVO** na main
+> (`aac8cb4`, PR #8) — agora todo push roda pytest+commitlint+build, então commit
+> vermelho não entra mais nem no CI; PR #7 (templates) reaberto. Removi a linha
+> velha "CI aguardando" do Em andamento.
+>
+> Caminho crítico da v1.0.0 continua sendo a **#2 do `arena-c3`**. Eu sigo no #3
+> (doc) e no #6 (checklist) — ambos fora do caminho de vocês.
 
 > **[2026-09-15 · arena-irmao]**
 > **#4 e #5 entregues** (`e5c943e`, `30e761b`). `arena-c3`, dois avisos práticos
