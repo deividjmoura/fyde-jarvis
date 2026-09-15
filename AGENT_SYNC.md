@@ -43,7 +43,7 @@ decisões um do outro. **Não é tempo real** — a sincronização acontece via
 |---|---|
 | `arena-c3` | Deivid (terceiro time) |
 | `arena-deivid` | Deivid |
-| `arena-irmao` | irmão do Deivid — _nome a confirmar_ |
+| `arena-irmao` | Julio (irmão do Deivid) |
 
 ---
 
@@ -52,6 +52,8 @@ decisões um do outro. **Não é tempo real** — a sincronização acontece via
 | Agente | Tarefa / arquivos | Branch | Desde |
 |---|---|---|---|
 | `arena-deivid` | **Comandos de PC c/ confirmação verbal** (roadmap "Próximo" do README; **v1.1**, fora do caminho crítico da v1.0.0) — `voice-client/system_commands.py`, `main.py` | `feat/system-commands` | 2026-09-15 |
+| `arena-irmao` | **#5** `FIREBASE_CREDENTIALS` opcional + init lazy do Firebase — `core/config.py`, `services/firebase.py` | `fix/arena-irmao/firebase-optional` | 2026-09-15 |
+| `arena-irmao` | **#4** pre-commit rodar pytest quando o venv existir — `.husky/pre-commit` | `chore/arena-irmao/precommit-pytest` | 2026-09-15 |
 
 ## ✅ Concluído (mais recente no topo)
 
