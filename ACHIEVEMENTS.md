@@ -68,6 +68,18 @@ e *testada em produção* no próprio projeto.
   **44 MB → 273 KB** preservando os 44 commits (backup em bundle antes).
 - Conventional Commits enforced por commitlint + husky; histórico atômico e legível.
 
+## 🪝 Guardas que impedem regressão
+
+- **Pre-commit que bloqueia:** com o venv presente, `git commit` roda a suíte e é
+  **barrado** se estiver vermelha (verificado com um teste forçado a falhar:
+  `husky - pre-commit script failed (code 1)`); sem venv, avisa e deixa passar.
+- **Config opcional de verdade:** `FIREBASE_CREDENTIALS` deixou de ser obrigatório
+  e o init do Firebase virou *lazy* — bug real: `credentials.Certificate({})` rodava
+  na importação e derrubava o boot mesmo com o `{}` recomendado no `.env.example`.
+  Agora `/chat-test` roda sem credencial e `/chat` devolve 401 explicativo.
+- **Contrato entre times testado:** `test_contract.py` quebra a suíte se alguém
+  remover `SYSTEM_PROMPT`/`tools` de `first_agent.py` (import usado pelo SSE alheio).
+
 ## 🧰 Tools do agente com provedores plugáveis
 
 - `get_weather` (Open-Meteo, **zero API key**) e `web_search` (Wikipédia pt por
