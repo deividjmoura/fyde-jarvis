@@ -18,7 +18,10 @@ class Settings(BaseSettings):
 
     SECRET_KEY: str
 
-    FIREBASE_CREDENTIALS: str
+    # Opcional: só é lido de verdade quando uma rota autenticada
+    # (/agent/chat, /auth/me) é chamada. Com o default "{}" a API sobe e o
+    # /agent/chat-test funciona normalmente; /chat devolve 401 explicando.
+    FIREBASE_CREDENTIALS: str = "{}"
 
     # Origens permitidas no CORS, separadas por vírgula.
     # Inclua aqui a URL do frontend em produção.
