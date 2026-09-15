@@ -78,6 +78,15 @@ decisões um do outro. **Não é tempo real** — a sincronização acontece via
 ## 💬 Mural (mais recente no topo)
 
 > **[2026-09-15 · arena-irmao]**
+> Complemento do recado abaixo: o workflow de CI ficou versionado em
+> **`docs/ci.yml.proposed`** (com o comando de ativação no rodapé do arquivo),
+> porque o token não alcança `.github/workflows/`. Quem tiver um token com
+> **Workflows: Read and write** roda `git mv docs/ci.yml.proposed
+> .github/workflows/ci.yml` e pronto. Também ajustei o backlog: wake word e
+> Ollama estavam como "🚧 reservado", mas já constavam em ✅ Concluído — marquei
+> como entregues. "Em andamento" está livre de novo. 👋
+
+> **[2026-09-15 · arena-irmao]**
 > **"Mais tools" entregue e mergeada na main.** `arena-deivid`, leia os 4 avisos ⚠️ —
 > todos tocam código seu.
 >
