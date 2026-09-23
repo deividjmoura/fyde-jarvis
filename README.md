@@ -142,6 +142,8 @@ cd voice-client && source .venv/bin/activate
 python main.py
 ```
 
+
+
 Fluxo:
 1. Você fala
 2. Whisper transcreve
