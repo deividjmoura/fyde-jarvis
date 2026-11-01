@@ -100,3 +100,40 @@ React + Vite + Firebase Auth (Google). Deploy no Netlify (`netlify.toml`).
 - Commits seguem **Conventional Commits** (commitlint + husky)
 - `node_modules`, `.venv`, `__pycache__`, `.env` **nunca** são versionados
 - Cada usuário tem um `thread_id` próprio (`user_<firebase_uid>`)
+
+
+## Evolução para Android e execução autônoma (planejada)
+
+A arquitetura atual não deve ser confundida com a arquitetura autônoma concluída. O cliente de voz Linux já existe, mas o worker remoto persistente e a experiência Android ainda precisam ser implementados.
+
+Fluxo-alvo:
+
+```
+Android PWA (voz + texto + jobs + notificações)
+          │ HTTPS / SSE autenticado
+          ▼
+FastAPI + Firebase Auth + identidade de dispositivo
+          │
+          ├── LangGraph: planeja e seleciona tools registradas
+          ├── PostgreSQL: conversas + jobs + eventos + leases
+          │
+          ▼
+Worker local CachyOS (conexão de saída autenticada)
+          │
+          ├── política local / allowlist
+          ├── workspace autorizado e sandbox
+          ├── testes, Git e GitHub
+          └── heartbeat / progresso / resultado
+```
+
+### Limites de confiança
+
+- O LLM não executa texto livre como shell. Ele solicita ferramentas tipadas e registradas.
+- O worker local valida novamente cada ação, diretório, argumento e permissão; a validação no servidor não substitui a política local.
+- O notebook inicia a conexão de saída; não expor um endpoint de terminal à internet.
+- Jobs são persistidos no PostgreSQL com estado, lease, tentativas limitadas e idempotency key. Não depender apenas de tarefas em memória do processo HTTP.
+- Cada dispositivo tem credencial revogável e escopo associado ao usuário.
+- Merge, deploy, publicação, alterações de secrets e ações destrutivas exigem aprovação explícita.
+- Endpoints de teste sem autenticação não podem ficar habilitados em produção.
+
+Ver [auditoria de evolução 2026-11](./audit-2026-11.md) para riscos, etapas e critérios de aceite.
