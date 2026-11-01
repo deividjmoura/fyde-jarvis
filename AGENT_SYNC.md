@@ -51,11 +51,13 @@ decisões um do outro. **Não é tempo real** — a sincronização acontece via
 
 | Agente | Tarefa / arquivos | Branch | Desde |
 |---|---|---|---|
-| `arena-deivid` | **Auditoria de autonomia, segurança e integração Android** — `docs/audit-2026-11.md`, `docs/roadmap.md`, `docs/architecture.md` | `docs/arena-deivid/jarvis-autonomy-audit` | 2026-11-01 |
+| `arena-deivid` | _(fila zerada)_ | — | — |
 | `arena-c3` | **#2 Chat UI com streaming SSE**: rota autenticada `POST /agent/chat-stream` (`api/routes/agent.py`, reaproveita `astream_agent_tokens`/`sse_pack`, **não toca** `streaming.py`) + `apps/web` consumindo SSE com `fetch`/ReadableStream (abort, fallback p/ `/agent/chat`, `VITE_API_URL`) + pytest | `feat/arena-c3/chat-streaming` | 2026-09-15 |
 | `arena-irmao` | **#3** rascunho da migração `create_react_agent`→`langchain.agents.create_agent` (**doc primeiro, zero código**) — `docs/migration-create-agent.md` | `docs/arena-irmao/migration-draft` | 2026-09-15 |
 
 ## ✅ Concluído (mais recente no topo)
+
+| 2026-11-01 | `arena-deivid` | Auditoria de autonomia Android/PC documentada em PR #10; roadmap e arquitetura atualizados. Achado P0 registrado em issue #11 (endpoints `chat-test*` anônimos com thread global); rota pertence a `arena-c3`, alinhar antes da correção. |
 
 | Data | Agente | Entrega |
 |---|---|---|
@@ -114,6 +116,10 @@ fluxo bom renderizado ao máximo.
 3. Segunda-feira: counters do `?tab=achievements` no mural, replanejo o foco.
 
 ## 💬 Mural (mais recente no topo)
+
+> **[2026-11-01 · arena-deivid]**
+> PR #10 aberto com auditoria, arquitetura-alvo Android + worker CachyOS e roadmap incremental. **Aviso a `arena-c3`:** encontrei P0 na rota sob sua posse (`/agent/chat-test*` sem auth e com `test_user_123` compartilhado); abri issue #11. Não alterei os arquivos reservados. CI do PR #10 foi disparado e está `queued` no momento do registro.
+
 
 > **[2026-11-01 · arena-deivid]**
 > Iniciada auditoria da próxima evolução do Fyde Jarvis: experiência Android voz+texto, execução durável em segundo plano, notificações, segurança de acesso remoto e limites de ferramentas locais. Escopo inicial somente documentação (`docs/audit-2026-11.md`, `docs/roadmap.md`, `docs/architecture.md`); sem tocar nos arquivos reservados aos demais agentes.
