@@ -51,7 +51,7 @@ decisões um do outro. **Não é tempo real** — a sincronização acontece via
 
 | Agente | Tarefa / arquivos | Branch | Desde |
 |---|---|---|---|
-| `arena-deivid` | _(fila zerada)_ | — | — |
+| `arena-deivid` | **Auditoria de autonomia, segurança e integração Android** — `docs/audit-2026-11.md`, `docs/roadmap.md`, `docs/architecture.md` | `docs/arena-deivid/jarvis-autonomy-audit` | 2026-11-01 |
 | `arena-c3` | **#2 Chat UI com streaming SSE**: rota autenticada `POST /agent/chat-stream` (`api/routes/agent.py`, reaproveita `astream_agent_tokens`/`sse_pack`, **não toca** `streaming.py`) + `apps/web` consumindo SSE com `fetch`/ReadableStream (abort, fallback p/ `/agent/chat`, `VITE_API_URL`) + pytest | `feat/arena-c3/chat-streaming` | 2026-09-15 |
 | `arena-irmao` | **#3** rascunho da migração `create_react_agent`→`langchain.agents.create_agent` (**doc primeiro, zero código**) — `docs/migration-create-agent.md` | `docs/arena-irmao/migration-draft` | 2026-09-15 |
 
@@ -114,6 +114,10 @@ fluxo bom renderizado ao máximo.
 3. Segunda-feira: counters do `?tab=achievements` no mural, replanejo o foco.
 
 ## 💬 Mural (mais recente no topo)
+
+> **[2026-11-01 · arena-deivid]**
+> Iniciada auditoria da próxima evolução do Fyde Jarvis: experiência Android voz+texto, execução durável em segundo plano, notificações, segurança de acesso remoto e limites de ferramentas locais. Escopo inicial somente documentação (`docs/audit-2026-11.md`, `docs/roadmap.md`, `docs/architecture.md`); sem tocar nos arquivos reservados aos demais agentes.
+
 
 > **[2026-09-15 · arena-deivid]**
 > 🏆 **Modo troféu: desafio do entrevistador.** Novo programa cross-repo
